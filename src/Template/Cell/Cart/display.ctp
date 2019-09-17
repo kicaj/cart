@@ -1,3 +1,8 @@
-Session ID: <?php echo $this->request->getSession()->id(); ?><br>
-Cart ID: <?php echo $this->getRequest()->getSession()->read('Cart.id'); ?>
-<br>Cart summary: <?php echo $this->Number->currency($summary); ?>
+<?php
+    echo $this->Html->link(__d('cart', 'Cart summary') . ': ' . $this->Number->currency($summary), [
+        'prefix' => false,
+        'plugin' => 'Cart',
+        'controller' => 'Carts',
+        'action' => 'index',
+    ]);
+?>
