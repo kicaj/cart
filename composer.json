@@ -1,0 +1,28 @@
+{
+	"name" : "kicaj/cart",
+	"description" : "Cart plugin for CakePHP without rebuild existing structure",
+	"type" : "cakephp-plugin",
+	"license" : "MIT",
+	"support" : {
+		"issues" : "https://github.com/kicaj/cart/issues",
+		"source" : "https://github.com/kicaj/cart"
+	},
+	"authors" : [{
+			"name" : "kicaj",
+			"email" : "kicaj@kdev.pl",
+			"role" : "Author"
+		}, {
+			"name" : "Others",
+			"homepage" : "https://github.com/kicaj/cart/graphs/contributors"
+		}
+	],
+	"require" : {
+		"cakephp/cakephp" : "3.6.*"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Cart\\" : "src"
+		}
+	},
+	"minimum-stability" : "dev"
+}
