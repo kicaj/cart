@@ -51,7 +51,6 @@ class CartsTable extends Table
             ]);
 
             if (!$cart->isEmpty()) {
-                echo 'aaa';
                 $cart = $cart->first();
 
                 $session->write('Cart.id', $cart->id);
