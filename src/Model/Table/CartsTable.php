@@ -33,6 +33,43 @@ class CartsTable extends Table
     }
 
     /**
+     * Refresh cart.
+     *
+     * @param Session $session Session data.
+     */
+    public function refresh(Session $session): void
+    {
+        if ($session->check('Auth.id')) {
+            $cart = $this->find()->select([
+                'Carts.' . $this->getPrimaryKey(),
+                'Carts.session_id',
+            ])->where([
+                'Carts.user_id' => $session->read('Auth.id'),
+                'Carts.status' => self::CART_STATUS_OPEN,
+            ])->order([
+                'Carts.created' => 'DESC',
+            ]);
+
+            if (!$cart->isEmpty()) {
+                echo 'aaa';
+                $cart = $cart->first();
+
+                $session->write('Cart.id', $cart->id);
+
+                // Update session ID.
+                if ($cart->session_id != $session->id()) {
+                    // Update item.
+                    $cart = $this->patchEntity($cart, [
+                        'session_id' => $session->id(),
+                    ]);
+
+                    $this->save($cart);
+                }
+            }
+        }
+    }
+
+    /**
      * Create new cart.
      *
      * @param string $session_id Session ID.
@@ -146,7 +183,7 @@ class CartsTable extends Table
             ]);
         }
 
-        // Update User ID.
+        // Update user ID.
         if (empty($cart->user_id) && $user_id = $session->read('Auth.id')) {
             $cart->user_id = $user_id;
         }
@@ -195,7 +232,7 @@ class CartsTable extends Table
             // Update item.
             $cart = $this->patchEntity($cart, $cart->toArray());
 
-            // Update User ID.
+            // Update user ID.
             if (empty($cart->user_id) && $user_id = $session->read('Auth.id')) {
                 $cart->user_id = $user_id;
             }

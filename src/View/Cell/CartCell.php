@@ -14,6 +14,8 @@ class CartCell extends Cell
     public function initialize()
     {
         $this->loadModel('Cart.Carts');
+
+        $this->Carts->refresh($this->request->getSession());
     }
 
     /**
@@ -30,14 +32,14 @@ class CartCell extends Cell
             'Carts.status' => CartsTable::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
-            return $cart_items->select([
-                'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
-                'CartItems.cart_id',
-                'CartItems.price',
-                'CartItems.quantity',
-            ]);
+                return $cart_items->select([
+                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
+                    'CartItems.cart_id',
+                    'CartItems.price',
+                    'CartItems.quantity',
+                ]);
             },
-            ]);
+        ]);
 
         $summary = 0;
 
