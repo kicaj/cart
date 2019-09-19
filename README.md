@@ -66,7 +66,7 @@ That's all!
 
 ## Troubleshooting
 
-1. I'm getting message "SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'price' cannot be null".
+1. I'm getting message "SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'price' cannot be null".  
 If You haven't column `price` in Your relation table (eg. Product), then You can set virtual property in `/Model/Entity/Product.php`.
 ```
 protected $_virtual = ['price'];
