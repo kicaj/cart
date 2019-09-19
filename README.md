@@ -15,8 +15,7 @@ The recommended way to install composer packages is:
 composer require kicaj/cart dev-master
 ```
 
-Load the Plugin
------------
+### Load the Plugin
 
 Ensure the Cart plugin is loaded in your src/Application.php file
 ```
@@ -28,8 +27,7 @@ or add manually by `cake` command
 cake plugin load Cart
 ```
 
-Configuration
----------------------
+### Configuration
 
 Firstly, use Migrations plugin to create tables in your database.
 
