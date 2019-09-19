@@ -63,3 +63,16 @@ public function initialize()
 ```
 
 That's all!
+
+## Troubleshooting
+
+1. I'm getting message "SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'price' cannot be null".
+If You haven't column `price` in Your relation table (eg. Product), then You can set virtual property in `/Model/Entity/Product.php`.
+```
+protected $_virtual = ['price'];
+
+protected function _getPrice()
+{
+    return $this->cost; // Field cost (or value, amout, etc.) in Your table
+}
+```
