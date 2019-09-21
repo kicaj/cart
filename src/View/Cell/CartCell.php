@@ -1,7 +1,6 @@
 <?php
 namespace Cart\View\Cell;
 
-use Cake\Routing\Router;
 use Cake\View\Cell;
 use Cart\Model\Table\CartsTable;
 
@@ -63,13 +62,13 @@ class CartCell extends Cell
      */
     public function add($item, string $label = null, array $options = []): void
     {
-        $link = Router::url([
+        $link = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
             'action' => 'add',
             $item,
-        ]);
+        ];
 
         if (is_null($label)) {
             $label = __d('cart', 'Add to cart');
@@ -88,13 +87,13 @@ class CartCell extends Cell
      */
     public function change($item, int $quantity = 1, string $label = null, array $options = []): void
     {
-        $link = Router::url([
+        $link = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
             'action' => 'change',
             $item,
-        ]);
+        ];
 
         if (is_null($label)) {
             $label = __d('cart', 'Change');
@@ -112,13 +111,13 @@ class CartCell extends Cell
      */
     public function remove($item, string $label = null, array $options = []): void
     {
-        $link = Router::url([
+        $link = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
             'action' => 'remove',
             $item,
-        ]);
+        ];
 
         if (is_null($label)) {
             $label = __d('cart', 'Remove');
