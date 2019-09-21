@@ -35,7 +35,7 @@ Firstly, use Migrations plugin to create tables in your database.
 cake migrations migrate -p Cart
 ```
 
-Now, if everything is correct, You can open URL with fragment `/cart/carts` and You should see "Cart is empty".
+Now, if everything is correct, You can open URL with fragment `localhost/app/cart/carts` and You should see "Cart is empty".
 
 Next, You should set global association to work with your products with Cart plugin.
 ```
@@ -61,6 +61,14 @@ public function initialize()
     ]);
 }   
 ```
+
+The last thing you should do is add button "Add do cart" in your product view.  
+Open view of product, probably `src/Template/Products/view.ctp` and load the cell:
+```
+echo $this->cell('Cart.Cart::add', [$product->sku]); // First argument is product unique identiefier
+```
+
+Check again `localhost/app/cart/cars`!
 
 That's all!
 
