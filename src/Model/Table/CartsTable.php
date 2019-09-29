@@ -12,6 +12,7 @@ class CartsTable extends Table
     /**
      * Cart statuses.
      */
+    const CART_STATUS_MERGED = -2;
     const CART_STATUS_REJECT = -1;
     const CART_STATUS_OPEN = 0;
     const CART_STATUS_COMPLET = 1;
@@ -53,16 +54,71 @@ class CartsTable extends Table
             if (!$cart->isEmpty()) {
                 $cart = $cart->first();
 
-                $session->write('Cart.id', $cart->id);
+                if (!$session->check('Cart.id')) {
+                    $session->write('Cart.id', $cart->id);
+                } else {
+                    if ($session->read('Cart.id') !== $cart->id) {
+                        // Merge older open carts.
+                        $carts = $this->find()->select([
+                            'Carts.' . $this->getPrimaryKey(),
+                        ])->where([
+                            'Carts.user_id' => $session->read('Auth.id'),
+                            'Carts.status' => self::CART_STATUS_OPEN,
+                        ])->contain([
+                            'CartItems' => function ($cart_items) {
+                                return $cart_items->select([
+                                    'CartItems.' . $this->CartItems->getPrimaryKey(),
+                                    'CartItems.cart_id',
+                                    'CartItems.identifier',
+                                    'CartItems.quantity',
+                                ]);
+                            },
+                        ]);
 
-                // Update session ID.
-                if ($cart->session_id != $session->id()) {
-                    // Update item.
-                    $cart = $this->patchEntity($cart, [
-                        'session_id' => $session->id(),
-                    ]);
+                        if (!$carts->isEmpty()) {
+                            array_map(function ($cart) use ($session) {
+                                // Set cart status to merged
+                                $this->updateAll([
+                                    'status' => self::CART_STATUS_MERGED,
+                                ], [
+                                    $this->getPrimaryKey() => $cart->id,
+                                ]);
 
-                    $this->save($cart);
+                                // Add earlier added items to cart.
+                                if (!empty($cart_items = $cart->cart_items)) {
+                                    foreach ($cart_items as $cart_item) {
+                                        $this->add($session, $cart_item->identifier, $cart_item->quantity);
+                                    }
+                                }
+                            }, $carts->all()->toArray());
+                        }
+
+                        // Update session ID.
+                        $cart = $this->patchEntity($cart, [
+                            $this->getPrimaryKey() => $session->read('Cart.id'),
+                            'session_id' => $session->id(),
+                        ]);
+
+                        $this->save($cart);
+                    }
+                }
+            }
+        } else {
+            if ($session->check('Cart.id')) {
+                $cart = $this->find()->select([
+                    'Carts.' . $this->getPrimaryKey(),
+                    'Carts.user_id',
+                ])->where([
+                    'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
+                    'Carts.status' => self::CART_STATUS_OPEN,
+                ]);
+
+                if (!$cart->isEmpty()) {
+                    $cart = $cart->first();
+
+                    if (!empty($cart->user_id)) {
+                        $session->delete('Cart.id');
+                    }
                 }
             }
         }
@@ -139,6 +195,7 @@ class CartsTable extends Table
 
         $cart = $this->find()->select([
             'Carts.' . $this->getPrimaryKey(),
+            'Carts.session_id',
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
             'Carts.status' => self::CART_STATUS_OPEN,
