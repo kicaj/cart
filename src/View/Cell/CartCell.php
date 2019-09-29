@@ -20,10 +20,8 @@ class CartCell extends Cell
     /**
      * Cart summary.
      */
-    public function display(): void
+    public function display()
     {
-        $this->request->getSession()->read('Cart.id');
-
         $cart = $this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
         ])->where([
@@ -60,7 +58,7 @@ class CartCell extends Cell
      * @param string|null $label Anchor label.
      * @param array $options Options are the same of HtmlHelper::link() method.
      */
-    public function add($item, string $label = null, array $options = []): void
+    public function add($item, string $label = null, array $options = [])
     {
         $link = [
             'prefix' => false,
@@ -85,7 +83,7 @@ class CartCell extends Cell
      * @param string|null $label Anchor label.
      * @param array $options Options are the same of HtmlHelper::link() method.
      */
-    public function change($item, int $quantity = 1, string $label = null, array $options = []): void
+    public function change($item, int $quantity = 1, string $label = null, array $options = [])
     {
         $link = [
             'prefix' => false,
@@ -109,7 +107,7 @@ class CartCell extends Cell
      * @param string|null $label Anchor label.
      * @param array $options Options are the same of HtmlHelper::link() method.
      */
-    public function remove($item, string $label = null, array $options = []): void
+    public function remove($item, string $label = null, array $options = [])
     {
         $link = [
             'prefix' => false,
