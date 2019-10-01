@@ -53,6 +53,10 @@ class CartsController extends AppController
             $this->Flash->error(__d('cart', 'Could not be added. Please, try again.'));
         }
 
+        if ($redirect = $this->getRequest()->getQuery('redirect')) {
+            $this->redirect($redirect);
+        }
+
         $this->redirect($this->referer());
     }
 

@@ -68,6 +68,10 @@ class CartCell extends Cell
             $item,
         ];
 
+        if (isset($options['redirect'])) {
+            $link['?']['redirect'] = $options['redirect'];
+        }
+
         if (is_null($label)) {
             $label = __d('cart', 'Add to cart');
         }
