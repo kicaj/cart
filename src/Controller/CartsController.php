@@ -43,8 +43,8 @@ class CartsController extends AppController
     {
         $quantity = 1;
 
-        if ($this->request->is('post')) {
-            $quantity = (int) $this->request->getData('quantity');
+        if ($this->getRequest()->is('post')) {
+            $quantity = (int) $this->getRequest()->getData('quantity');
         }
 
         if ($this->Carts->add($this->getRequest()->getSession(), $item, $quantity)) {
@@ -63,8 +63,8 @@ class CartsController extends AppController
      */
     public function change($item)
     {
-        if ($this->request->is('post')) {
-            $quantity = (int) $this->request->getData('quantity');
+        if ($this->getRequest()->is('post')) {
+            $quantity = (int) $this->getRequest()->getData('quantity');
 
             if ($this->Carts->change($this->getRequest()->getSession(), $item, $quantity)) {
                 $this->Flash->success(__d('cart', 'Successfully changed in cart!'));
@@ -83,7 +83,7 @@ class CartsController extends AppController
      */
     public function remove($item)
     {
-        if ($this->request->is(['delete', 'post'])) {
+        if ($this->getRequest()->is(['delete', 'post'])) {
             if ($this->Carts->remove($this->getRequest()->getSession(), $item)) {
                 $this->Flash->success(__d('cart', 'Successfully deleted from cart!'));
             } else {
