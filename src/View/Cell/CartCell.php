@@ -48,7 +48,7 @@ class CartCell extends Cell
             }
         }
 
-        $this->set(compact('summary'));
+        $this->set(compact('cart', 'summary'));
     }
 
     /**
