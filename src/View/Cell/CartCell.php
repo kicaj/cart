@@ -34,6 +34,10 @@ class CartCell extends Cell
                     'CartItems.cart_id',
                     'CartItems.price',
                     'CartItems.quantity',
+                ])->contain([
+                    'CartItemProducts' => function ($cart_item_products) {
+                        return $cart_item_products->select($this->Carts->CartItems->CartItemProducts);
+                    },
                 ]);
             },
         ]);

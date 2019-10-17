@@ -20,12 +20,5 @@ class CartItemsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Cart.Carts');
-
-        // @TODO Remove
-        $this->belongsTo('Subscription', [
-            'joinType' => 'INNER',
-            'foreignKey' => 'item_revision_hash',
-            'bindingKey' => 'revision_hash'
-        ]);
     }
 }
