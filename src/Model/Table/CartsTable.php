@@ -15,7 +15,8 @@ class CartsTable extends Table
     const CART_STATUS_MERGED = -2;
     const CART_STATUS_REJECT = -1;
     const CART_STATUS_OPEN = 0;
-    const CART_STATUS_COMPLET = 1;
+    const CART_STATUS_PENDING = 1;
+    const CART_STATUS_COMPLET = 2;
 
     /**
      * {@inheritdoc}
