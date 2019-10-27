@@ -1,6 +1,7 @@
 {
 	"name" : "kicaj/cart",
 	"description" : "Cart plugin for CakePHP without rebuild existing structure",
+	"homepage" : "https://github.com/kicaj/cart",
 	"type" : "cakephp-plugin",
 	"license" : "MIT",
 	"support" : {
