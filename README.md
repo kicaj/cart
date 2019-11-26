@@ -74,8 +74,8 @@ That's all!
 
 ## Troubleshooting
 
-1. I'm getting message "SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'price' cannot be null" when I cliced "Add to cart" button.  
-If You haven't column `price` in Your relation table (eg. products), then you can set virtual property in `/Model/Entity/Product.php`.
+1. I'm getting message "SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'price' cannot be null" when I clicked "Add to cart" button.  
+If You haven't got column `price` in Your relation table (eg. products), then you can set virtual property in `/Model/Entity/Product.php`.
 ```
 protected $_virtual = ['price'];
 
