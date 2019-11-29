@@ -2,7 +2,7 @@
 namespace Cart\View\Cell;
 
 use Cake\View\Cell;
-use Cart\Model\Table\CartsTable;
+use Cart\Model\Entity\Cart;
 
 class CartCell extends Cell
 {
@@ -26,7 +26,7 @@ class CartCell extends Cell
             'Carts.' . $this->Carts->getPrimaryKey(),
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
-            'Carts.status' => CartsTable::CART_STATUS_OPEN,
+            'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([

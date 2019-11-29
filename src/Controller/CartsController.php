@@ -2,7 +2,7 @@
 namespace Cart\Controller;
 
 use App\Controller\AppController;
-use Cart\Model\Table\CartsTable;
+use Cart\Model\Entity\Cart;
 
 class CartsController extends AppController
 {
@@ -14,7 +14,7 @@ class CartsController extends AppController
     {
         $cart = $this->Carts->find()->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
-            'Carts.status' => CartsTable::CART_STATUS_OPEN,
+            'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([

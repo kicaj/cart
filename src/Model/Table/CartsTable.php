@@ -5,18 +5,10 @@ use Cake\ORM\Table;
 use Cake\Http\Session;
 use Cake\ORM\Entity;
 use Cake\Http\Exception\NotFoundException;
+use Cart\Model\Entity\Cart;
 
 class CartsTable extends Table
 {
-
-    /**
-     * Cart statuses.
-     */
-    const CART_STATUS_MERGED = -2;
-    const CART_STATUS_REJECT = -1;
-    const CART_STATUS_OPEN = 0;
-    const CART_STATUS_PENDING = 1;
-    const CART_STATUS_COMPLET = 2;
 
     /**
      * {@inheritdoc}
@@ -47,7 +39,7 @@ class CartsTable extends Table
                 'Carts.session_id',
             ])->where([
                 'Carts.user_id' => $session->read('Auth.id'),
-                'Carts.status' => self::CART_STATUS_OPEN,
+                'Carts.status' => Cart::CART_STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
             ]);
@@ -64,7 +56,7 @@ class CartsTable extends Table
                             'Carts.' . $this->getPrimaryKey(),
                         ])->where([
                             'Carts.user_id' => $session->read('Auth.id'),
-                            'Carts.status' => self::CART_STATUS_OPEN,
+                            'Carts.status' => Cart::CART_STATUS_OPEN,
                         ])->contain([
                             'CartItems' => function ($cart_items) {
                                 return $cart_items->select([
@@ -80,7 +72,7 @@ class CartsTable extends Table
                             array_map(function ($cart) use ($session) {
                                 // Set cart status to merged
                                 $this->updateAll([
-                                    'status' => self::CART_STATUS_MERGED,
+                                    'status' => Cart::CART_STATUS_MERGED,
                                 ], [
                                     $this->getPrimaryKey() => $cart->id,
                                 ]);
@@ -111,7 +103,7 @@ class CartsTable extends Table
                     'Carts.user_id',
                 ])->where([
                     'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-                    'Carts.status' => self::CART_STATUS_OPEN,
+                    'Carts.status' => Cart::CART_STATUS_OPEN,
                 ]);
 
                 if (!$cart->isEmpty()) {
@@ -139,7 +131,7 @@ class CartsTable extends Table
                 'Carts.' . $this->getPrimaryKey(),
             ])->where([
                 'Carts.user_id' => $user_id,
-                'Carts.status' => self::CART_STATUS_OPEN,
+                'Carts.status' => Cart::CART_STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
             ]);
@@ -149,11 +141,11 @@ class CartsTable extends Table
 
                 // Reject old carts.
                 $this->updateAll([
-                    'status' => self::CART_STATUS_REJECT,
+                    'status' => Cart::CART_STATUS_REJECT,
                 ], [
                     $this->getPrimaryKey() .' !=' => $cart->id,
                     'user_id' => $user_id,
-                    'status' => self::CART_STATUS_OPEN,
+                    'status' => Cart::CART_STATUS_OPEN,
                 ]);
 
                 return $cart;
@@ -199,7 +191,7 @@ class CartsTable extends Table
             'Carts.session_id',
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-            'Carts.status' => self::CART_STATUS_OPEN,
+            'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
@@ -266,7 +258,7 @@ class CartsTable extends Table
             'Carts.' . $this->getPrimaryKey(),
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-            'Carts.status' => self::CART_STATUS_OPEN,
+            'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
@@ -315,7 +307,7 @@ class CartsTable extends Table
             'Carts.' . $this->getPrimaryKey(),
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-            'Carts.status' => self::CART_STATUS_OPEN,
+            'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
