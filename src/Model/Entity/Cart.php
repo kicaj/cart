@@ -19,7 +19,7 @@ class Cart extends Entity
     /**
      * List of statuses.
      *
-     * @return array List of statuses.
+     * @return array Statuses list.
      */
     public static function getStatuses()
     {
@@ -37,12 +37,16 @@ class Cart extends Entity
      * Get status.
      *
      * @param integer $status Status identifier.
-     * @return string Status.
+     * @return string Status name.
      */
     public static function getStatus($status)
     {
-        if (array_key_exists($status, self::getStatuses())) {
-            return self::getStatuses()[$status];
+        $statuses = self::getStatuses();
+
+        if (array_key_exists($status, $statuses)) {
+            return $statuses[$status];
         }
+
+        return '';
     }
 }
