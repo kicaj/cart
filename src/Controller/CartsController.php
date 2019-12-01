@@ -2,6 +2,7 @@
 namespace Cart\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
 use Cart\Model\Entity\Cart;
 
 class CartsController extends AppController
@@ -18,7 +19,7 @@ class CartsController extends AppController
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
-                    'CartItems.id',
+                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
                     'CartItems.cart_id',
                     'CartItems.identifier',
                     'CartItems.price',
@@ -92,6 +93,46 @@ class CartsController extends AppController
                 $this->Flash->success(__d('cart', 'Successfully deleted from cart!'));
             } else {
                 $this->Flash->error(__d('cart', 'Could not be deleted. Please, try again.'));
+            }
+        }
+
+        $this->redirect($this->referer());
+    }
+
+    public function pay()
+    {
+        $cart = $this->Carts->find()->where([
+            'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.status' => Cart::CART_STATUS_OPEN,
+        ])->contain([
+            'CartItems' => function ($cart_items) {
+                return $cart_items->select([
+                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
+                    'CartItems.cart_id',
+                    'CartItems.identifier',
+                    'CartItems.price',
+                    'CartItems.quantity',
+                ])->contain([
+                    'CartItemProducts' => function ($cart_item_product) {
+                        return $cart_item_product->select($this->Carts->CartItems->CartItemProducts);
+                    },
+                ]);
+            },
+        ]);
+
+        if (!$cart->isEmpty()) {
+            $cart = $cart->first();
+
+            if (!empty($cart->cart_items)) {
+                $cart = $this->Carts->patchEntity($cart, [
+                    'status' => Cart::CART_STATUS_NEW,
+                ]);
+
+                if ($this->Carts->save($cart)) {
+                    $cart = $cart->toArray();
+
+                    $this->getEventManager()->dispatch(new Event('Cart.payment', $this, compact('cart')));
+                }
             }
         }
 
