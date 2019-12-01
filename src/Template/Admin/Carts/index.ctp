@@ -45,7 +45,7 @@ echo __d('cart', 'Carts'); ?>
                                 <?php echo $cart->items; ?>
                             </td>
                             <td class="text-right">
-                                <?php echo $this->Number->currency(0); ?>
+                                <?php echo $this->Number->currency($cart->amount); ?>
                             </td>
                             <td class="text-center">
                                 <?php echo Cart::getStatus($cart->status); ?>
