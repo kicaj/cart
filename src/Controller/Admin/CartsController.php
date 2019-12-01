@@ -24,6 +24,7 @@ class CartsController extends AppController
             ],
             'sortWhitelist' => [
                 $this->Carts->getPrimaryKey(),
+                'items',
                 'status',
                 'modified',
             ],
