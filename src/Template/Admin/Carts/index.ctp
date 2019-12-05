@@ -15,9 +15,9 @@ echo __d('cart', 'Carts'); ?>
                 <thead>
                     <tr>
                         <th class="text-center w-1"><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
-                        <th><?php echo __d('cart', 'User'); ?></th>
+                        <th><?php echo __d('cart', 'Customer'); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('items', __d('cart', 'Items')); ?></th>
-                        <th class="text-right"><?php echo __d('cart', 'Amount'); ?></th>
+                        <th class="text-center"><?php echo $this->Paginator->sort('amount', __d('cart', 'Amount')); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('status', __d('cart', 'status')); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('modified', __d('cart', 'Last modified')); ?></th>
                         <th class="text-center"></th>
@@ -34,7 +34,7 @@ echo __d('cart', 'Carts'); ?>
 <?php if (!is_null($cart->user_id)): ?>
                                     <?php echo $cart->user_id; ?>
 <?php else: ?>
-                                    <?php echo __d('cart', 'Anonymous'); ?>
+                                    <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
 <?php endif; ?>
                                 </div>
                                 <div class="text-muted small">
@@ -44,7 +44,7 @@ echo __d('cart', 'Carts'); ?>
                             <td class="text-center">
                                 <?php echo $cart->items; ?>
                             </td>
-                            <td class="text-right">
+                            <td class="text-center">
                                 <?php echo $this->Number->currency($cart->amount); ?>
                             </td>
                             <td class="text-center">
@@ -77,9 +77,24 @@ echo __d('cart', 'Carts'); ?>
             </table>
         </div>
         <div class="card-footer">
-            <div class="text-right">
+            <div class="col">
+            1
+            </div>
+            <div class="col text-right">
                 <?php echo $this->element('pagination'); ?>
             </div>
         </div>
     </div>
 </div>
+
+    <div class="row mb-2">
+        <div class="col small text-muted">
+            <?php if ($count = $this->Paginator->counter('{{count}}')): ?>
+                <?php echo __('Total found tenders'); ?>:
+                <?php echo $count; ?>
+            <?php endif; ?>
+        </div>
+        <div class="col">
+            <?php echo $this->element('pagination'); ?>
+        </div>
+    </div>

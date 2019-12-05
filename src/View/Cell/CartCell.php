@@ -27,32 +27,9 @@ class CartCell extends Cell
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
-        ])->contain([
-            'CartItems' => function ($cart_items) {
-                return $cart_items->select([
-                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
-                    'CartItems.price',
-                    'CartItems.quantity',
-                ])->contain([
-                    'CartItemProducts' => function ($cart_item_products) {
-                        return $cart_item_products->select($this->Carts->CartItems->CartItemProducts);
-                    },
-                ]);
-            },
         ]);
 
-        $summary = 0;
-
-        if (!$cart->isEmpty()) {
-            $cart = $cart->first();
-
-            foreach ($cart->cart_items as $cart_items) {
-                $summary += $cart_items['price'] * $cart_items['quantity'];
-            }
-        }
-
-        $this->set(compact('cart', 'summary'));
+        $this->set(compact('cart'));
     }
 
     /**
