@@ -28,7 +28,15 @@ class CartCell extends Cell
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
-        ])->first();
+        ]);
+
+        if (!$cart->isEmpty()) {
+            $cart = $cart->first();
+        } else {
+            $cart = $this->Carts->newEntity([
+                'amount' => 0,
+            ]);
+        }
 
         $this->set(compact('cart'));
     }
