@@ -24,10 +24,11 @@ class CartCell extends Cell
     {
         $cart = $this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
+            'Carts.amount',
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
-        ]);
+        ])->first();
 
         $this->set(compact('cart'));
     }
