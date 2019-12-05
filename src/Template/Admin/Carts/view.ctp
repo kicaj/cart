@@ -22,8 +22,8 @@ use Cart\Model\Entity\Cart;
                     <?php echo __d('admin', 'Customer'); ?>
                 </div>
                 <div class="form-control-plaintext">
-                    <?php if (!is_null($cart->user_id)): ?>
-                        <?php echo $cart->user_id; ?>
+                    <?php if (!is_null($cart->customer_id)): ?>
+                        <?php echo $cart->customer_id; ?>
                     <?php else: ?>
                         <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
                     <?php endif; ?>

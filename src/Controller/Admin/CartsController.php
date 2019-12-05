@@ -15,7 +15,7 @@ class CartsController extends AppController
     {
         $carts = $this->paginate($this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
-            'Carts.user_id',
+            'Carts.customer_id',
             'Carts.items',
             'Carts.amount',
             'Carts.status',
@@ -67,8 +67,7 @@ class CartsController extends AppController
     {
         $cart = $this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
-            'Carts.user_id',
-            'Carts.items',
+            'Carts.customer_id',
             'Carts.amount',
             'Carts.status',
             'Carts.modified',

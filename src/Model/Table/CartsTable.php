@@ -38,7 +38,7 @@ class CartsTable extends Table
                 'Carts.' . $this->getPrimaryKey(),
                 'Carts.session_id',
             ])->where([
-                'Carts.user_id' => $session->read('Auth.id'),
+                'Carts.customer_id' => $session->read('Auth.id'),
                 'Carts.status' => Cart::CART_STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
@@ -55,7 +55,7 @@ class CartsTable extends Table
                         $carts = $this->find()->select([
                             'Carts.' . $this->getPrimaryKey(),
                         ])->where([
-                            'Carts.user_id' => $session->read('Auth.id'),
+                            'Carts.customer_id' => $session->read('Auth.id'),
                             'Carts.status' => Cart::CART_STATUS_OPEN,
                         ])->contain([
                             'CartItems' => function ($cart_items) {
@@ -100,7 +100,7 @@ class CartsTable extends Table
             if ($session->check('Cart.id')) {
                 $cart = $this->find()->select([
                     'Carts.' . $this->getPrimaryKey(),
-                    'Carts.user_id',
+                    'Carts.customer_id',
                 ])->where([
                     'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
                     'Carts.status' => Cart::CART_STATUS_OPEN,
@@ -109,7 +109,7 @@ class CartsTable extends Table
                 if (!$cart->isEmpty()) {
                     $cart = $cart->first();
 
-                    if (!empty($cart->user_id)) {
+                    if (!empty($cart->customer_id)) {
                         $session->delete('Cart.id');
                     }
                 }
@@ -120,17 +120,17 @@ class CartsTable extends Table
     /**
      * Create new cart.
      *
-     * @param string $session_id Session ID.
-     * @param int|null $user_id User ID.
+     * @param string $session_id Session identifier.
+     * @param int|null $customer_id Customer identifier.
      * @return Entity Cart.
      */
-    private function create(string $session_id, ?int $user_id): Entity
+    private function create(string $session_id, ?int $customer_id): Entity
     {
-        if (!is_null($user_id)) {
+        if (!is_null($customer_id)) {
             $cart = $this->find()->select([
                 'Carts.' . $this->getPrimaryKey(),
             ])->where([
-                'Carts.user_id' => $user_id,
+                'Carts.customer_id' => $customer_id,
                 'Carts.status' => Cart::CART_STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
@@ -144,7 +144,7 @@ class CartsTable extends Table
                     'status' => Cart::CART_STATUS_REJECT,
                 ], [
                     $this->getPrimaryKey() .' !=' => $cart->id,
-                    'user_id' => $user_id,
+                    'customer_id' => $customer_id,
                     'status' => Cart::CART_STATUS_OPEN,
                 ]);
 
@@ -156,8 +156,8 @@ class CartsTable extends Table
             'session_id' => $session_id,
         ];
 
-        if (!is_null($user_id)) {
-            $cart['user_id'] = $user_id;
+        if (!is_null($customer_id)) {
+            $cart['customer_id'] = $customer_id;
         }
 
         $cart = $this->newEntity($cart);
@@ -233,8 +233,8 @@ class CartsTable extends Table
         }
 
         // Update user ID.
-        if (empty($cart->user_id) && $user_id = $session->read('Auth.id')) {
-            $cart->user_id = $user_id;
+        if (empty($cart->customer_id) && $customer_id = $session->read('Auth.id')) {
+            $cart->customer_id = $customer_id;
         }
 
         if ($this->save($cart)) {
@@ -282,8 +282,8 @@ class CartsTable extends Table
             $cart = $this->patchEntity($cart, $cart->toArray());
 
             // Update user ID.
-            if (empty($cart->user_id) && $user_id = $session->read('Auth.id')) {
-                $cart->user_id = $user_id;
+            if (empty($cart->customer_id) && $customer_id = $session->read('Auth.id')) {
+                $cart->customer_id = $customer_id;
             }
 
             if ($this->save($cart)) {

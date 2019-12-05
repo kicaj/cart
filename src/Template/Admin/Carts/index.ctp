@@ -1,9 +1,10 @@
+<?php
+use Cart\Model\Entity\Cart;
+?>
 <div class="container">
     <div class="page-header">
         <h1 class="page-title">
-            <?php use Cart\Model\Entity\Cart;
-
-echo __d('cart', 'Carts'); ?>
+            <?php echo __d('cart', 'Carts'); ?>
         </h1>
     </div>
     <div class="card">
@@ -31,11 +32,11 @@ echo __d('cart', 'Carts'); ?>
                             </td>
                             <td>
                                 <div>
-<?php if (!is_null($cart->user_id)): ?>
-                                    <?php echo $cart->user_id; ?>
-<?php else: ?>
-                                    <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
-<?php endif; ?>
+                                    <?php if (!is_null($cart->customer_id)): ?>
+                                        <?php echo $cart->customer_id; ?>
+                                    <?php else: ?>
+                                        <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="text-muted small">
                                     <?php echo __d('cart', 'Created at'); ?> <?php echo $cart->created; ?>
