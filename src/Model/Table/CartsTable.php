@@ -313,7 +313,6 @@ class CartsTable extends Table
                 return $cart_items->select([
                     'CartItems.' . $this->CartItems->getPrimaryKey(),
                     'CartItems.cart_id',
-                    'CartItems.quantity',
                 ])->where([
                     'CartItems.identifier' => $identifier,
                 ]);

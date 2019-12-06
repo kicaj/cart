@@ -109,4 +109,33 @@ class CartsController extends AppController
             throw new NotFoundException();
         }
     }
+
+    /**
+     * Delete cart item.
+     *
+     * @param string|null $cart_item_id Cart item identifier.
+     */
+    public function itemDelete($cart_item_id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+
+        $cartItem = $this->Carts->CartItems->find()->select([
+            'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
+            'CartItems.cart_id',
+        ])->where([
+            'CartItems.' . $this->Carts->CartItems->getPrimaryKey() => $cart_item_id,
+        ]);
+
+        if (!$cartItem->isEmpty()) {
+            if ($this->Carts->CartItems->deleteOrFail($cartItem->first())) {
+                $this->Flash->success(__d('admin', 'The element has been removed.'));
+            } else {
+                $this->Flash->error(__d('admin', 'The element could not be removed. Please, try again.'));
+            }
+
+            return $this->redirect($this->getRequest()->referer());
+        } else {
+            throw new NotFoundException();
+        }
+    }
 }

@@ -58,7 +58,7 @@ class CartsController extends AppController
             $this->redirect($redirect);
         }
 
-        $this->redirect($this->referer());
+        $this->redirect($this->getRequest()->referer());
     }
 
     /**
@@ -78,7 +78,7 @@ class CartsController extends AppController
             }
         }
 
-        $this->redirect($this->referer());
+        $this->redirect($this->getRequest()->referer());
     }
 
     /**
@@ -90,15 +90,18 @@ class CartsController extends AppController
     {
         if ($this->getRequest()->is(['delete', 'post'])) {
             if ($this->Carts->remove($this->getRequest()->getSession(), $item)) {
-                $this->Flash->success(__d('cart', 'Successfully deleted from cart!'));
+                $this->Flash->success(__d('cart', 'Successfully removed from cart!'));
             } else {
-                $this->Flash->error(__d('cart', 'Could not be deleted. Please, try again.'));
+                $this->Flash->error(__d('cart', 'Could not be removed. Please, try again.'));
             }
         }
 
-        $this->redirect($this->referer());
+        $this->redirect($this->getRequest()->referer());
     }
 
+    /**
+     * Payment.
+     */
     public function pay()
     {
         $cart = $this->Carts->find()->where([
@@ -136,6 +139,6 @@ class CartsController extends AppController
             }
         }
 
-        $this->redirect($this->referer());
+        $this->redirect($this->getRequest()->referer());
     }
 }
