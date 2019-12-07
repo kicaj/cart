@@ -26,7 +26,6 @@ class CartsController extends AppController
                 Cart::CART_STATUS_NEW,
                 Cart::CART_STATUS_PENDING,
                 Cart::CART_STATUS_COMPLET,
-                Cart::CART_STATUS_OPEN,
             ],
         ])->contain([
             'CartItems' => function ($cart_items) {
@@ -77,7 +76,6 @@ class CartsController extends AppController
                 Cart::CART_STATUS_NEW,
                 Cart::CART_STATUS_PENDING,
                 Cart::CART_STATUS_COMPLET,
-                Cart::CART_STATUS_OPEN,
             ],
         ]);
 
