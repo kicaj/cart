@@ -78,24 +78,7 @@ use Cart\Model\Entity\Cart;
             </table>
         </div>
         <div class="card-footer">
-            <div class="col">
-            1
-            </div>
-            <div class="col text-right">
-                <?php echo $this->element('pagination'); ?>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="row mb-2">
-        <div class="col small text-muted">
-            <?php if ($count = $this->Paginator->counter('{{count}}')): ?>
-                <?php echo __('Total found tenders'); ?>:
-                <?php echo $count; ?>
-            <?php endif; ?>
-        </div>
-        <div class="col">
             <?php echo $this->element('pagination'); ?>
         </div>
     </div>
+</div>
