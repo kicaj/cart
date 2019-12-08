@@ -86,6 +86,7 @@ class CartsController extends AppController
                 'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
                 'CartItems.identifier',
                 'CartItems.price',
+                'CartItems.tax',
                 'CartItems.quantity',
                 'CartItems.modified',
             ])->where([
@@ -97,6 +98,7 @@ class CartsController extends AppController
                 'sortWhitelist' => [
                     $this->Carts->CartItems->getPrimaryKey(),
                     'price',
+                    'tax',
                     'quantity',
                     'modified',
                 ],

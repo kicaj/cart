@@ -66,6 +66,7 @@ use Cart\Model\Entity\Cart;
                             <th class="text-center w-1"><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
                             <th><?php echo __d('admin', 'Identifier'); ?></th>
                             <th class="text-center"><?php echo $this->Paginator->sort('price', __d('admin', 'Price')); ?></th>
+                            <th class="text-center"><?php echo $this->Paginator->sort('tax', __d('admin', 'Tax')); ?></th>
                             <th class="text-center"><?php echo $this->Paginator->sort('quantity', __d('admin', 'Quantity')); ?></th>
                             <th class="text-center"><?php echo $this->Paginator->sort('modified', __d('admin', 'Last modified')); ?></th>
                             <th class="text-center"></th>
@@ -82,6 +83,13 @@ use Cart\Model\Entity\Cart;
                                 </td>
                                 <td class="text-center">
                                     <?php echo $this->Number->currency($cartItem->price); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php
+                                        if (!is_null($cartItem->tax)) {
+                                            echo $this->Number->toPercentage($cartItem->tax, 0);
+                                        }
+                                    ?>
                                 </td>
                                 <td class="text-center">
                                     <?php echo $cartItem->quantity; ?>
