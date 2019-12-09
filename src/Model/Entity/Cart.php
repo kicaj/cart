@@ -15,7 +15,7 @@ class Cart extends Entity
     public const CART_STATUS_NEW = 1;
     public const CART_STATUS_PENDING = 2;
     public const CART_STATUS_COMPLETED = 3;
-    public const CART_STATUS_SHIPPED = 3;
+    public const CART_STATUS_SHIPPED = 4;
     public const CART_STATUS_REFUNDED = 5;
     public const CART_STATUS_COMPLAINED = 6;
 
