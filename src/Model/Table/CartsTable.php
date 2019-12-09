@@ -141,7 +141,7 @@ class CartsTable extends Table
 
                 // Reject old carts.
                 $this->updateAll([
-                    'status' => Cart::CART_STATUS_REJECT,
+                    'status' => Cart::CART_STATUS_REJECTED,
                 ], [
                     $this->getPrimaryKey() .' !=' => $cart->id,
                     'customer_id' => $customer_id,

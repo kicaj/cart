@@ -23,10 +23,10 @@ class CartsController extends AppController
             'Carts.modified',
         ])->where([
             'Carts.status IN' => [
-                Cart::CART_STATUS_REJECT,
+                Cart::CART_STATUS_REJECTED,
                 Cart::CART_STATUS_NEW,
                 Cart::CART_STATUS_PENDING,
-                Cart::CART_STATUS_COMPLET,
+                Cart::CART_STATUS_COMPLETED,
             ],
         ])->contain([
             'CartItems' => function ($cart_items) {
@@ -74,10 +74,10 @@ class CartsController extends AppController
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
             'Carts.status IN' => [
-                Cart::CART_STATUS_REJECT,
+                Cart::CART_STATUS_REJECTED,
                 Cart::CART_STATUS_NEW,
                 Cart::CART_STATUS_PENDING,
-                Cart::CART_STATUS_COMPLET,
+                Cart::CART_STATUS_COMPLETED,
             ],
         ]);
 
