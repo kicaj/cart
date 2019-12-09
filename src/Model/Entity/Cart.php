@@ -20,6 +20,15 @@ class Cart extends Entity
     public const CART_STATUS_COMPLAINED = 6;
 
     /**
+     * Cart payments.
+     */
+    public const CART_PAYMENT_REJECTED = -1;
+    public const CART_PAYMENT_NEW = 0;
+    public const CART_PAYMENT_PENDING = 1;
+    public const CART_PAYMENT_COMPLETED = 2;
+    public const CART_PAYMENT_DELIVERED = 3;
+
+    /**
      * List of statuses.
      *
      * @return array Statuses list.
@@ -51,6 +60,39 @@ class Cart extends Entity
 
         if (array_key_exists($status, $statuses)) {
             return $statuses[$status];
+        }
+
+        return '';
+    }
+
+    /**
+     * List of payments.
+     *
+     * @return array Payment list.
+     */
+    public static function getPayment()
+    {
+        return [
+            self::CART_PAYMENT_REJECTED => __d('cart', 'Payment rejected'),
+            self::CART_PAYMENT_NEW => __d('cart', 'Payment new'),
+            self::CART_PAYMENT_PENDING => __d('cart', 'Payment pending'),
+            self::CART_PAYMENT_COMPLETED => __d('cart', 'Payment completed'),
+            self::CART_PAYMENT_DELIVERED => __d('cart', 'Payment on delivered'),
+        ];
+    }
+
+    /**
+     * Get payment.
+     *
+     * @param integer $payment Payment identifier.
+     * @return string Payment name.
+     */
+    public static function getPayment($payment)
+    {
+        $payments = self::getPayment();
+
+        if (array_key_exists($payment, $payments)) {
+            return $payments[$payment];
         }
 
         return '';
