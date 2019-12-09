@@ -19,14 +19,13 @@ class CartsController extends AppController
             'Carts.items',
             'Carts.amount',
             'Carts.status',
+            'Carts.payment',
             'Carts.created',
             'Carts.modified',
         ])->where([
-            'Carts.status IN' => [
-                Cart::CART_STATUS_REJECTED,
-                Cart::CART_STATUS_NEW,
-                Cart::CART_STATUS_PENDING,
-                Cart::CART_STATUS_COMPLETED,
+            'Carts.status NOT IN' => [
+                Cart::CART_STATUS_MERGED,
+                Cart::CART_STATUS_OPEN,
             ],
         ])->contain([
             'CartItems' => function ($cart_items) {
@@ -51,6 +50,7 @@ class CartsController extends AppController
                 'items',
                 'amount',
                 'status',
+                'payment',
                 'modified',
             ],
         ]);
@@ -70,14 +70,13 @@ class CartsController extends AppController
             'Carts.customer_id',
             'Carts.amount',
             'Carts.status',
+            'Carts.payment',
             'Carts.modified',
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
-            'Carts.status IN' => [
-                Cart::CART_STATUS_REJECTED,
-                Cart::CART_STATUS_NEW,
-                Cart::CART_STATUS_PENDING,
-                Cart::CART_STATUS_COMPLETED,
+            'Carts.status NOT IN' => [
+                Cart::CART_STATUS_MERGED,
+                Cart::CART_STATUS_OPEN,
             ],
         ]);
 

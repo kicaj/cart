@@ -13,8 +13,7 @@ class Cart extends Entity
     public const CART_STATUS_REJECTED = -1;
     public const CART_STATUS_OPEN = 0; // Technical
     public const CART_STATUS_NEW = 1;
-    public const CART_STATUS_PENDING = 2;
-    public const CART_STATUS_COMPLETED = 3;
+    public const CART_STATUS_READY = 3;
     public const CART_STATUS_SHIPPED = 4;
     public const CART_STATUS_REFUNDED = 5;
     public const CART_STATUS_COMPLAINED = 6;
@@ -22,11 +21,11 @@ class Cart extends Entity
     /**
      * Cart payments.
      */
-    public const CART_PAYMENT_REJECTED = -1;
-    public const CART_PAYMENT_NEW = 0;
+    public const CART_PAYMENT_CANCELED = -1;
+    public const CART_PAYMENT_STARTED = 0;
     public const CART_PAYMENT_PENDING = 1;
     public const CART_PAYMENT_COMPLETED = 2;
-    public const CART_PAYMENT_DELIVERED = 3;
+    public const CART_PAYMENT_DELIVERY = 3;
 
     /**
      * List of statuses.
@@ -40,8 +39,7 @@ class Cart extends Entity
             self::CART_STATUS_REJECTED => __d('cart', 'Rejected'),
             self::CART_STATUS_OPEN => __d('cart', 'Open'),
             self::CART_STATUS_NEW => __d('cart', 'New'),
-            self::CART_STATUS_PENDING => __d('cart', 'Pending'),
-            self::CART_STATUS_COMPLETED => __d('cart', 'Completed'),
+            self::CART_STATUS_READY => __d('cart', 'Ready'),
             self::CART_STATUS_SHIPPED => __d('cart', 'Shipped'),
             self::CART_STATUS_REFUNDED => __d('cart', 'Refunded'),
             self::CART_STATUS_COMPLAINED => __d('cart', 'Complained'),
@@ -70,14 +68,14 @@ class Cart extends Entity
      *
      * @return array Payment list.
      */
-    public static function getPayment()
+    public static function getPayments()
     {
         return [
-            self::CART_PAYMENT_REJECTED => __d('cart', 'Payment rejected'),
-            self::CART_PAYMENT_NEW => __d('cart', 'Payment new'),
-            self::CART_PAYMENT_PENDING => __d('cart', 'Payment pending'),
-            self::CART_PAYMENT_COMPLETED => __d('cart', 'Payment completed'),
-            self::CART_PAYMENT_DELIVERED => __d('cart', 'Payment on delivered'),
+            self::CART_PAYMENT_CANCELED => __d('cart', 'Canceled'),
+            self::CART_PAYMENT_STARTED => __d('cart', 'Started'),
+            self::CART_PAYMENT_PENDING => __d('cart', 'Pending'),
+            self::CART_PAYMENT_COMPLETED => __d('cart', 'Completed'),
+            self::CART_PAYMENT_DELIVERY => __d('cart', 'On delivery'),
         ];
     }
 
@@ -89,7 +87,7 @@ class Cart extends Entity
      */
     public static function getPayment($payment)
     {
-        $payments = self::getPayment();
+        $payments = self::getPayments();
 
         if (array_key_exists($payment, $payments)) {
             return $payments[$payment];

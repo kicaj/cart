@@ -45,6 +45,14 @@ use Cart\Model\Entity\Cart;
                     <?php echo Cart::getStatus($cart->status); ?>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="form-label">
+                    <?php echo __d('admin', 'Payment'); ?>
+                </div>
+                <div class="form-control-plaintext">
+                    <?php echo Cart::getPayment($cart->payment); ?>
+                </div>
+            </div>
         </div>
     </div>
     <div class="card">

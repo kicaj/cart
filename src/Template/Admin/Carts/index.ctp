@@ -19,7 +19,8 @@ use Cart\Model\Entity\Cart;
                         <th><?php echo __d('cart', 'Customer'); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('items', __d('cart', 'Items')); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('amount', __d('cart', 'Amount')); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('status', __d('cart', 'status')); ?></th>
+                        <th class="text-center"><?php echo $this->Paginator->sort('status', __d('cart', 'Status')); ?></th>
+                        <th class="text-center"><?php echo $this->Paginator->sort('payment', __d('cart', 'Payment')); ?></th>
                         <th class="text-center"><?php echo $this->Paginator->sort('modified', __d('cart', 'Last modified')); ?></th>
                         <th class="text-center"></th>
                     </tr>
@@ -50,6 +51,9 @@ use Cart\Model\Entity\Cart;
                             </td>
                             <td class="text-center">
                                 <?php echo Cart::getStatus($cart->status); ?>
+                            </td>
+                            <td class="text-center">
+                                <?php echo Cart::getPayment($cart->payment); ?>
                             </td>
                             <td class="text-center">
                                 <?php echo $cart->modified; ?>
