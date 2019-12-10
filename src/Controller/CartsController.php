@@ -129,6 +129,7 @@ class CartsController extends AppController
             if (!empty($cart->cart_items)) {
                 $cart = $this->Carts->patchEntity($cart, [
                     'status' => Cart::CART_STATUS_NEW,
+                    'payment' => Cart::CART_PAYMENT_STARTED,
                 ]);
 
                 if ($this->Carts->save($cart)) {
