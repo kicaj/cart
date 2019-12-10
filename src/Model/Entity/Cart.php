@@ -13,10 +13,10 @@ class Cart extends Entity
     public const CART_STATUS_REJECTED = -1;
     public const CART_STATUS_OPEN = 0; // Technical
     public const CART_STATUS_NEW = 1;
-    public const CART_STATUS_READY = 3;
-    public const CART_STATUS_SHIPPED = 4;
-    public const CART_STATUS_REFUNDED = 5;
-    public const CART_STATUS_COMPLAINED = 6;
+    public const CART_STATUS_READY = 2;
+    public const CART_STATUS_SHIPPED = 3;
+    public const CART_STATUS_REFUNDED = 4;
+    public const CART_STATUS_COMPLAINED = 5;
 
     /**
      * Cart payments.
