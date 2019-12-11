@@ -26,7 +26,7 @@ class CartItemsTable extends Table
                 'amount' => function ($event, $entity, $table, $original) {
                     $items = $table->find()->select([
                         'price',
-                        'quantity'
+                        'quantity',
                     ])->where([
                         'cart_id' => $entity->cart_id,
                     ])->toArray();
@@ -38,7 +38,7 @@ class CartItemsTable extends Table
                     }
 
                     return $amount;
-                }
+                },
             ],
         ]);
     }

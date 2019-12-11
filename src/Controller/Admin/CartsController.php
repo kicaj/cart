@@ -76,8 +76,17 @@ class CartsController extends AppController
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
             'Carts.status NOT IN' => [
                 Cart::CART_STATUS_MERGED,
-                Cart::CART_STATUS_OPEN,
+                //Cart::CART_STATUS_OPEN,
             ],
+        ])->contain([
+            'CartItems' => function ($cart_items) {
+                return $cart_items->select([
+                    'CartItems.cart_id',
+                    'CartItems.price',
+                    'CartItems.tax',
+                    'CartItems.quantity',
+                ]);
+            },
         ]);
 
         if (!$cart->isEmpty()) {

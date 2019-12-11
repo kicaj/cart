@@ -28,6 +28,15 @@ class CartCell extends Cell
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
+        ])->contain([
+            'CartItems' => function ($cart_items) {
+                return $cart_items->select([
+                    'CartItems.cart_id',
+                    'CartItems.price',
+                    'CartItems.tax',
+                    'CartItems.quantity',
+                ]);
+            },
         ]);
 
         if (!$cart->isEmpty()) {

@@ -34,7 +34,8 @@ use Cart\Model\Entity\Cart;
                     <?php echo __d('admin', 'Amount'); ?>
                 </div>
                 <div class="form-control-plaintext">
-                    <?php echo $this->Number->currency($cart->amount); ?>
+                    <?php echo $this->Number->currency($cart->amount); ?><br>
+                    <span class="small text-muted"><?php echo $this->Number->currency($cart->amount_netto); ?> netto</span>
                 </div>
             </div>
             <div class="form-group">

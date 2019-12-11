@@ -2,6 +2,8 @@
 namespace Cart\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cart\Exception\AmountNettoFieldsException;
+use Cart\Exception\AmountNettoItemsException;
 
 class Cart extends Entity
 {
@@ -94,5 +96,33 @@ class Cart extends Entity
         }
 
         return '';
+    }
+
+    /**
+     * Get amount netto.
+     *
+     * @return float Amount netto value.
+     */
+    protected function _getAmountNetto()
+    {
+        if ($this->cart_items) {
+            $amount_netto = 0;
+
+            foreach ($this->cart_items as $cart_item) {
+                if (!isset($cart_item['price'], $cart_item['quantity']) || !array_key_exists('tax', $cart_item->toArray())) {
+                    throw new AmountNettoFieldsException();
+                }
+
+                if (!is_null($cart_item->tax)) {
+                    $amount_netto += ($cart_item->price / (($cart_item->tax / 100) + 1)) * $cart_item->quantity;
+                } else {
+                    $amount_netto += $cart_item->price * $cart_item->quantity;
+                }
+            }
+
+            return round($amount_netto, 2);
+        } else {
+            throw new AmountNettoItemsException();
+        }
     }
 }
