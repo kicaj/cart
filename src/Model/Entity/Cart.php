@@ -105,7 +105,7 @@ class Cart extends Entity
      */
     protected function _getAmountNetto()
     {
-        if ($this->cart_items) {
+        if (isset($this->cart_items)) {
             $amount_netto = 0;
 
             foreach ($this->cart_items as $cart_item) {
