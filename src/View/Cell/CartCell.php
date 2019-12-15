@@ -44,6 +44,7 @@ class CartCell extends Cell
         } else {
             $cart = $this->Carts->newEntity([
                 'amount' => 0,
+                'cart_items' => []
             ]);
         }
 
