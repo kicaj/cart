@@ -5,6 +5,7 @@
 ?>
     <?php
         echo $this->Form->control('quantity', [
+            'label' => __d('cart', 'Quantity'),
             'type' => 'number',
             'min' => 1,
             'value' => 1,
