@@ -23,6 +23,7 @@ class CartsController extends AppController
                     'CartItems.cart_id',
                     'CartItems.identifier',
                     'CartItems.price',
+                    'CartItems.tax',
                     'CartItems.quantity',
                 ])->contain([
                     'CartItemProducts' => function ($cart_item_product) {
