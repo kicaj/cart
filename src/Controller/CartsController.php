@@ -31,9 +31,16 @@ class CartsController extends AppController
                     },
                 ]);
             },
-        ])->first();
+        ]);
+            
+        $this->loadModel('Deliveries');
+        $deliveries = $this->Deliveries->find()->select([
+            'Deliveries.id',
+            'Deliveries.name',
+            'Deliveries.cost',
+        ]);
 
-        $this->set(compact('cart'));
+        $this->set(compact('cart', 'deliveries'));
     }
 
     /**
