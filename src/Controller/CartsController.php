@@ -32,15 +32,65 @@ class CartsController extends AppController
                 ]);
             },
         ]);
-            
-        $this->loadModel('Deliveries');
-        $deliveries = $this->Deliveries->find()->select([
-            'Deliveries.id',
-            'Deliveries.name',
-            'Deliveries.cost',
+
+        if (!$cart->isEmpty()) {
+            $cart = $cart->first();
+
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $cart = $this->Carts->patchEntity($cart, $this->request->getData());
+
+                if ($this->Carts->save($cart)) {
+                    $this->Flash->success(__d('cart', 'The changes has been saved.'));
+
+                    return $this->redirect([
+                        'action' => 'checkout',
+                    ]);
+                }
+            }
+
+            $this->loadModel('Deliveries');
+            $deliveries = $this->Deliveries->find()->select([
+                'Deliveries.id',
+                'Deliveries.name',
+                'Deliveries.cost',
+            ]);
+
+            $this->set(compact('cart', 'deliveries'));
+        }
+    }
+
+    public function checkout()
+    {
+        $cart = $this->Carts->find()->where([
+            'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.status' => Cart::CART_STATUS_OPEN,
+        ])->contain([
+            'CartItems' => function ($cart_items) {
+                return $cart_items->select([
+                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
+                    'CartItems.cart_id',
+                    'CartItems.identifier',
+                    'CartItems.price',
+                    'CartItems.tax',
+                    'CartItems.quantity',
+                ])->contain([
+                    'CartItemProducts' => function ($cart_item_product) {
+                        return $cart_item_product->select($this->Carts->CartItems->CartItemProducts);
+                    },
+                ]);
+            },
+            'Deliveries',
         ]);
 
-        $this->set(compact('cart', 'deliveries'));
+        if (!$cart->isEmpty()) {
+            $cart = $cart->first();
+
+            $this->set(compact('cart'));
+        } else {
+            $this->redirect([
+                'action' => 'index',
+            ]);
+        }
     }
 
     /**
@@ -151,3 +201,4 @@ class CartsController extends AppController
         $this->redirect($this->getRequest()->referer());
     }
 }
+;

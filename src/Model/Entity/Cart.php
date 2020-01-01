@@ -125,4 +125,20 @@ class Cart extends Entity
             throw new AmountNettoItemsException();
         }
     }
+
+    /**
+     * Get total brutto.
+     *
+     * @return float Total brutto value.
+     */
+    protected function _getTotal()
+    {
+        $total = $this->amount;
+
+        if (!is_null($this->delivery)) {
+            $total += $this->delivery->cost;
+        }
+
+        return $total;
+    }
 }

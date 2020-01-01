@@ -1,4 +1,4 @@
-<?php if (!empty($cart->first()->cart_items)): ?>
+<?php if (!empty($cart->cart_items)): ?>
     <table>
         <tr>
             <th><?php echo __d('cart', 'Item'); ?></th>
@@ -8,7 +8,7 @@
             <th><?php echo __d('cart', 'Value'); ?></th>
             <th></th>
         </tr>
-        <?php foreach ($cart->first()->cart_items as $cart_item): ?>
+        <?php foreach ($cart->cart_items as $cart_item): ?>
             <tr>
                 <td>
                     <?php echo $cart_item->identifier; ?>
@@ -44,24 +44,22 @@
             </tr>
         <?php endforeach; ?>
     </table>
-    <?php
-    	echo $this->Form->create();
-    ?>
-	    <?php 
-	    	if (!empty($deliveries)) {
-	    		echo __d('cart', 'Delivery');
-	    		
-				echo $this->Form->radio('delivery_id.', array_map(function ($delivery) {
-					return [
-						'value' => $delivery->id,
-						'text' => $delivery->name . ' (' . $this->Number->currency($delivery->cost) . ')',
-					];
-				}, $deliveries->toArray()));
-			}
-			
-			echo $this->Form->submit(__d('cart', 'Checkout'));
-		?>
-	<?php echo $this->Form->end(); ?>
+    <?php echo $this->Form->create($cart); ?>
+        <?php
+            if (!empty($deliveries)) {
+                echo __d('cart', 'Delivery');
+
+                echo $this->Form->radio('delivery_id', array_map(function ($delivery) {
+                    return [
+                        'value' => $delivery->id,
+                        'text' => $delivery->name . ' (' . $this->Number->currency($delivery->cost) . ')',
+                    ];
+                }, $deliveries->toArray()));
+            }
+
+            echo $this->Form->submit(__d('cart', 'Checkout'));
+        ?>
+    <?php echo $this->Form->end(); ?>
 <?php else: ?>
     <?php echo __d('cart', 'Cart is empty.'); ?>
 <?php endif; ?>

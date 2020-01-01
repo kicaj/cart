@@ -13,7 +13,7 @@ class AddDeliveryIdColumnToCarts extends AbstractMigration
     public function change()
     {
         $table = $this->table('carts')
-            ->addColumn('cart_delivery_id', 'integer', [
+            ->addColumn('delivery_id', 'integer', [
                 'after' => 'customer_id',
                 'default' => null,
                 'limit' => 11,
@@ -21,11 +21,11 @@ class AddDeliveryIdColumnToCarts extends AbstractMigration
             ])
             ->addIndex(
                 [
-                    'cart_delivery_id',
+                    'delivery_id',
                 ]
             )
             ->addForeignKey(
-                'cart_delivery_id',
+                'delivery_id',
                 'deliveries',
                 'id',
                 [

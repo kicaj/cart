@@ -23,6 +23,8 @@ class CartsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('Cart.Deliveries');
+
         $this->hasMany('Cart.CartItems');
     }
 
@@ -226,6 +228,7 @@ class CartsTable extends Table
                     [
                         'identifier' => $identifier,
                         'price' => $item->first()->price,
+                        'tax' => $item->first()->tax,
                         'quantity' => $quantity,
                     ],
                 ],
