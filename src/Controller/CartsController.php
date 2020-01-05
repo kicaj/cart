@@ -217,4 +217,3 @@ class CartsController extends AppController
         $this->redirect($this->getRequest()->referer());
     }
 }
-;
