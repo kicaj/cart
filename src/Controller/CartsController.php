@@ -85,17 +85,18 @@ class CartsController extends AppController
 
         if (!$cart->isEmpty()) {
             $cart = $cart->first();
-            
+
             if ($this->request->is(['patch', 'post', 'put'])) {
                 $cart = $this->Carts->patchEntity($cart, $this->request->getData(), [
                     'associated' => ['CustomerAddresses']
                 ]);
-                
+
                 $cart->status = Cart::CART_STATUS_NEW;
-                
+                $cart->payment = Cart::CART_PAYMENT_STARTED;
+
                 if ($this->Carts->save($cart)) {
                     $cart = $cart->toArray();
-                    
+
                     $this->getEventManager()->dispatch(new Event('Cart.payment', $this, compact('cart')));
                 }
             }
