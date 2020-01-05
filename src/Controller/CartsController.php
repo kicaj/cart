@@ -48,7 +48,7 @@ class CartsController extends AppController
                 }
             }
 
-            $this->loadModel('Deliveries');
+            $this->loadModel('Cart.Deliveries');
             $deliveries = $this->Deliveries->find()->select([
                 'Deliveries.id',
                 'Deliveries.name',
