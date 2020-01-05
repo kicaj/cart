@@ -24,7 +24,9 @@ class CartsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Cart.Deliveries');
-
+        
+        $this->hasOne('Cart.CustomerAddresses');
+        
         $this->hasMany('Cart.CartItems');
     }
 

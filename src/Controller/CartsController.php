@@ -79,11 +79,26 @@ class CartsController extends AppController
                     },
                 ]);
             },
+            'CustomerAddresses',
             'Deliveries',
         ]);
 
         if (!$cart->isEmpty()) {
             $cart = $cart->first();
+            
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $cart = $this->Carts->patchEntity($cart, $this->request->getData(), [
+                    'associated' => ['CustomerAddresses']
+                ]);
+                
+                $cart->status = Cart::CART_STATUS_NEW;
+                
+                if ($this->Carts->save($cart)) {
+                    $cart = $cart->toArray();
+                    
+                    $this->getEventManager()->dispatch(new Event('Cart.payment', $this, compact('cart')));
+                }
+            }
 
             $this->set(compact('cart'));
         } else {
