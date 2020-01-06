@@ -1,88 +1,49 @@
 <?php
 use Cart\Model\Entity\Cart;
 ?>
-<div class="container">
-    <div class="page-header">
-        <h1 class="page-title">
-            <?php echo __d('cart', 'Carts'); ?>
-        </h1>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <?php echo __d('cart', 'List'); ?>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-outline table-vcenter card-table">
-                <thead>
-                    <tr>
-                        <th class="text-center w-1"><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
-                        <th><?php echo __d('cart', 'Customer'); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('items', __d('cart', 'Items')); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('amount', __d('cart', 'Amount')); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('status', __d('cart', 'Status')); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('payment', __d('cart', 'Payment')); ?></th>
-                        <th class="text-center"><?php echo $this->Paginator->sort('modified', __d('cart', 'Last modified')); ?></th>
-                        <th class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($carts as $cart): ?>
-                        <tr>
-                            <td class="text-center w-1">
-                                <?php echo $cart->id; ?>
-                            </td>
-                            <td>
-                                <div>
-                                    <?php if (!is_null($cart->customer_id)): ?>
-                                        <?php echo $cart->customer_id; ?>
-                                    <?php else: ?>
-                                        <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="text-muted small">
-                                    <?php echo __d('cart', 'Created at'); ?> <?php echo $cart->created; ?>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $cart->items; ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $this->Number->currency($cart->amount); ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo Cart::getStatus($cart->status); ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo Cart::getPayment($cart->payment); ?>
-                            </td>
-                            <td class="text-center">
-                                <?php echo $cart->modified; ?>
-                            </td>
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <div data-toggle="dropdown" class="icon">
-                                        <i class="fe fe-more-vertical"></i>
-                                    </div>
-                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
-                                        <?php
-                                            echo $this->Icon->link('eye dropdown-icon', __d('cart', 'View'), [
-                                                'controller' => 'Carts',
-                                                'action' => 'view',
-                                                $cart->id,
-                                            ], [
-                                                'class' => 'dropdown-item',
-                                            ]);
-                                        ?>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="card-footer">
-            <?php echo $this->element('pagination'); ?>
-        </div>
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+    </ul>
+</nav>
+<div class="carts index large-9 medium-8 columns content">
+    <h3><?= __('Carts') ?></h3>
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th scope="col"><?= $this->Paginator->sort('id') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('status') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('payment') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('total') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('created') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('modified') ?></th>
+                <th scope="col" class="actions"><?= __('Actions') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($carts as $cart): ?>
+            <tr>
+                <td><?= $this->Number->format($cart->id) ?></td>
+                <td><?= Cart::getStatus($cart->status) ?></td>
+                <td><?= Cart::getPayment($cart->payment) ?></td>
+                <td><?= $this->Number->currency($cart->total) ?></td>
+                <td><?= h($cart->created) ?></td>
+                <td><?= h($cart->modified) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link(__('View'), ['action' => 'view', $cart->id]) ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="paginator">
+        <ul class="pagination">
+            <?= $this->Paginator->first('<< ' . __('first')) ?>
+            <?= $this->Paginator->prev('< ' . __('previous')) ?>
+            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->next(__('next') . ' >') ?>
+            <?= $this->Paginator->last(__('last') . ' >>') ?>
+        </ul>
+        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
     </div>
 </div>

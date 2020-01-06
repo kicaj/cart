@@ -23,10 +23,7 @@ class CartsController extends AppController
             'Carts.created',
             'Carts.modified',
         ])->where([
-            'Carts.status NOT IN' => [
-                Cart::CART_STATUS_MERGED,
-                Cart::CART_STATUS_OPEN,
-            ],
+            'Carts.status !=' => Cart::CART_STATUS_MERGED,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
@@ -68,23 +65,26 @@ class CartsController extends AppController
         $cart = $this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
             'Carts.customer_id',
+            'Carts.delivery_id',
             'Carts.amount',
             'Carts.status',
             'Carts.payment',
             'Carts.modified',
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
-            'Carts.status NOT IN' => [
-                Cart::CART_STATUS_MERGED,
-                Cart::CART_STATUS_OPEN,
-            ],
+            'Carts.status !=' => Cart::CART_STATUS_MERGED,
         ])->contain([
-            'CartItems' => function ($cart_items) {
-                return $cart_items->select([
-                    'CartItems.cart_id',
-                    'CartItems.price',
-                    'CartItems.tax',
-                    'CartItems.quantity',
+            'Deliveries' => function ($delivery) {
+                return $delivery->select([
+                    'Deliveries.name',
+                ]);
+            },
+            'CustomerAddresses' => function ($customer_address) {
+                return $customer_address->select([
+                    'CustomerAddresses.street',
+                    'CustomerAddresses.postal',
+                    'CustomerAddresses.city',
+                    'CustomerAddresses.country',
                 ]);
             },
         ]);
@@ -92,7 +92,7 @@ class CartsController extends AppController
         if (!$cart->isEmpty()) {
             $cart = $cart->first();
 
-            $cartItems = $this->paginate($this->Carts->CartItems->find()->select([
+            $cart_items = $this->paginate($this->Carts->CartItems->find()->select([
                 'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
                 'CartItems.identifier',
                 'CartItems.price',
@@ -100,13 +100,13 @@ class CartsController extends AppController
                 'CartItems.quantity',
                 'CartItems.modified',
             ])->where([
-                'CartItems.cart_id' => $cart->{$this->Carts->getPrimaryKey()}
+                'CartItems.cart_id' => $cart->{$this->Carts->getPrimaryKey()},
             ]), [
                 'order' => [
                     'CartItems.modified' => 'DESC',
                 ],
                 'sortWhitelist' => [
-                    $this->Carts->CartItems->getPrimaryKey(),
+                    'identifier',
                     'price',
                     'tax',
                     'quantity',
@@ -114,7 +114,7 @@ class CartsController extends AppController
                 ],
             ]);
 
-            $this->set(compact('cart', 'cartItems'));
+            $this->set(compact('cart', 'cart_items'));
         } else {
             throw new NotFoundException();
         }
@@ -125,7 +125,7 @@ class CartsController extends AppController
      *
      * @param string|null $cart_item_id Cart item identifier.
      */
-    public function itemDelete($cart_item_id = null)
+    public function deleteItem($cart_item_id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -138,9 +138,9 @@ class CartsController extends AppController
 
         if (!$cartItem->isEmpty()) {
             if ($this->Carts->CartItems->deleteOrFail($cartItem->first())) {
-                $this->Flash->success(__d('admin', 'The element has been removed.'));
+                $this->Flash->success(__d('admin', 'The element has been deleted.'));
             } else {
-                $this->Flash->error(__d('admin', 'The element could not be removed. Please, try again.'));
+                $this->Flash->error(__d('admin', 'The element could not be deleted. Please, try again.'));
             }
 
             return $this->redirect($this->getRequest()->referer());

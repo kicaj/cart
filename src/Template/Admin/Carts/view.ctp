@@ -1,140 +1,103 @@
 <?php
 use Cart\Model\Entity\Cart;
 ?>
-<div class="container">
-    <div class="page-header">
-        <h1 class="page-title">
-            <?php echo __d('admin', 'Carts'); ?>
-        </h1>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <?php echo __d('admin', 'View'); ?>
-            <div class="card-options">
-                <span class="small">
-                    <?php echo __d('admin', 'Last modified at'); ?> <?php echo $cart->modified; ?>
-                </span>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <div class="form-label">
-                    <?php echo __d('admin', 'Customer'); ?>
-                </div>
-                <div class="form-control-plaintext">
-                    <?php if (!is_null($cart->customer_id)): ?>
-                        <?php echo $cart->customer_id; ?>
-                    <?php else: ?>
-                        <span class="text-muted"><?php echo __d('cart', 'Anonymous'); ?></span>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-label">
-                    <?php echo __d('admin', 'Amount'); ?>
-                </div>
-                <div class="form-control-plaintext">
-                    <?php echo $this->Number->currency($cart->amount); ?><br>
-                    <span class="small text-muted"><?php echo $this->Number->currency($cart->amount_netto); ?> netto</span>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-label">
-                    <?php echo __d('admin', 'Status'); ?>
-                </div>
-                <div class="form-control-plaintext">
-                    <?php echo Cart::getStatus($cart->status); ?>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-label">
-                    <?php echo __d('admin', 'Payment'); ?>
-                </div>
-                <div class="form-control-plaintext">
-                    <?php echo Cart::getPayment($cart->payment); ?>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header">
-            <?php echo __d('admin', 'Items'); ?>
-        </div>
-        <?php if ($cartItems->isEmpty()): ?>
-            <div class="card-body">
-                <div class="text-center text-muted">
-                    <i class="fe fe-alert-circle h1"></i><br>
-                    <?php echo __d('admin', 'There is nothing to display.'); ?>
-                </div>
-            </div>
-        <?php else: ?>
-            <div class="table-responsive">
-                <table class="table table-hover table-outline table-vcenter card-table">
-                    <thead>
-                        <tr>
-                            <th class="text-center w-1"><?php echo $this->Paginator->sort('id', 'ID'); ?></th>
-                            <th><?php echo __d('admin', 'Identifier'); ?></th>
-                            <th class="text-center"><?php echo $this->Paginator->sort('price', __d('admin', 'Price')); ?></th>
-                            <th class="text-center"><?php echo $this->Paginator->sort('tax', __d('admin', 'Tax')); ?></th>
-                            <th class="text-center"><?php echo $this->Paginator->sort('quantity', __d('admin', 'Quantity')); ?></th>
-                            <th class="text-center"><?php echo $this->Paginator->sort('modified', __d('admin', 'Last modified')); ?></th>
-                            <th class="text-center"></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($cartItems as $cartItem): ?>
-                            <tr>
-                                <td class="text-center w-1">
-                                    <?php echo $cartItem->id; ?>
-                                </td>
-                                <td>
-                                    <?php echo $cartItem->identifier; ?>
-                                </td>
-                                <td class="text-center">
-                                    <?php echo $this->Number->currency($cartItem->price); ?>
-                                </td>
-                                <td class="text-center">
-                                    <?php
-                                        if (!is_null($cartItem->tax)) {
-                                            echo $this->Number->toPercentage($cartItem->tax, 0);
-                                        }
-                                    ?>
-                                </td>
-                                <td class="text-center">
-                                    <?php echo $cartItem->quantity; ?>
-                                </td>
-                                <td class="text-center">
-                                    <?php echo $cartItem->modified; ?>
-                                </td>
-                                <td class="text-center">
-                                    <div class="dropdown">
-                                        <div data-toggle="dropdown" class="icon">
-                                            <i class="fe fe-more-vertical"></i>
-                                        </div>
-                                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end">
-                                            <?php
-                                                echo $this->Icon->postLink('x dropdown-icon text-danger', __d('admin', 'Remove'), [
-                                                    'controller' => 'Carts',
-                                                    'action' => 'item_delete',
-                                                    $cartItem->id,
-                                                ], [
-                                                    'class' => 'dropdown-item text-danger',
-                                                    'confirm' => __d('admin', 'Are you sure you want to do this?'),
-                                                ]);
-                                            ?>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
-        <div class="card-footer">
-            <div class="text-right">
-                <?php echo $this->element('pagination'); ?>
-            </div>
-        </div>
-    </div>
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('List Carts'), ['controller' => 'Carts', 'action' => 'index']) ?> </li>
+    </ul>
+</nav>
+<div class="cart view large-9 medium-8 columns content">
+    <h3><?= h($cart->id) ?></h3>
+    <table class="vertical-table">
+        <tr>
+            <th scope="row"><?= __('Status') ?></th>
+            <td><?= Cart::getPayment($cart->status) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Payment') ?></th>
+            <td><?= Cart::getPayment($cart->payment) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Total') ?></th>
+            <td><?= $this->Number->currency($cart->total) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Created') ?></th>
+            <td><?= h($cart->created) ?></td>
+        </tr>
+        <tr>
+            <th scope="row"><?= __('Modified') ?></th>
+            <td><?= h($cart->modified) ?></td>
+        </tr>
+    </table>
+    <?php if (!empty($cart_items)): ?>
+	    <div class="related">
+	        <h4><?= __('Items') ?></h4>
+	        <table cellpadding="0" cellspacing="0">
+	            <tr>
+	                <th scope="col"><?= $this->Paginator->sort('identifier') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('price') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('tax') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('quantity') ?></th>
+	                <th scope="col" class="actions"><?= __('Actions') ?></th>
+	            </tr>
+	            <?php foreach ($cart_items as $cart_item): ?>
+		            <tr>
+		            	<td><?= $cart_item->identifier ?></td>
+		            	<td><?= $this->Number->currency($cart_item->price) ?></td>
+		            	<td><?= !is_null($cart_item->tax) ? $this->Number->toPercentage($cart_item->tax, 0) : '' ?></td>
+		            	<td><?= $cart_item->quantity ?></td>
+		                <td class="actions">
+		                    <?= $this->Form->postLink(__('Delete'), ['controller' => 'Carts', 'action' => 'deleteItem', $cart_item->id], ['confirm' => __('Are you sure you want to delete # {0}?', $cart_item->id)]) ?>
+		                </td>
+		            </tr>
+	            <?php endforeach; ?>
+	        </table>
+	    </div>
+    <?php endif; ?>
+    <?php if (!empty($cart->delivery)): ?>
+	    <div class="related">
+	        <h4><?= __('Delivery') ?></h4>
+	        <table cellpadding="0" cellspacing="0">
+	            <tr>
+	                <th scope="col"><?= $this->Paginator->sort('name') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('cost') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('tax') ?></th>
+	                <th scope="col" class="actions"><?= __('Actions') ?></th>
+	            </tr>
+	            <tr>
+	            	<td><?= $cart->delivery->name ?></td>
+	            	<td><?= $this->Number->currency($cart->delivery->cost) ?></td>
+	            	<td><?= !is_null($cart->delivery->tax) ? $this->Number->toPercentage($cart->delivery->tax, 0) : '' ?></td>
+	                <td class="actions">
+	                    
+	                </td>
+	            </tr>
+	        </table>
+	    </div>
+    <?php endif; ?>
+    <?php if (!empty($cart->customer_address)): ?>
+	    <div class="related">
+	        <h4><?= __('Customer Address') ?></h4>
+	        <table cellpadding="0" cellspacing="0">
+	            <tr>
+	                <th scope="col"><?= $this->Paginator->sort('street') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('postal') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('city') ?></th>
+	                <th scope="col"><?= $this->Paginator->sort('country') ?></th>
+	                <th scope="col" class="actions"><?= __('Actions') ?></th>
+	            </tr>
+	            <tr>
+	            	<td><?= $cart->customer_address->street ?></td>
+	            	<td><?= $cart->customer_address->postal ?></td>
+	            	<td><?= $cart->customer_address->city ?></td>
+	            	<td><?= $cart->customer_address->country ?></td>
+	                <td class="actions">
+	                    
+	                </td>
+	            </tr>
+	        </table>
+	    </div>
+    <?php endif; ?>
 </div>
