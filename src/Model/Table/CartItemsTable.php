@@ -9,7 +9,7 @@ class CartItemsTable extends Table
     /**
      * {@inheritdoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 

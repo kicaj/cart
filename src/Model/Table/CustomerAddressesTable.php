@@ -6,31 +6,13 @@ use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
-/**
- * CustomerAddresses Model
- *
- * @property \Cart\Model\Table\CartsTable&\Cake\ORM\Association\BelongsTo $Carts
- *
- * @method \Cart\Model\Entity\CustomerAddress get($primaryKey, $options = [])
- * @method \Cart\Model\Entity\CustomerAddress newEntity($data = null, array $options = [])
- * @method \Cart\Model\Entity\CustomerAddress[] newEntities(array $data, array $options = [])
- * @method \Cart\Model\Entity\CustomerAddress|false save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \Cart\Model\Entity\CustomerAddress saveOrFail(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \Cart\Model\Entity\CustomerAddress patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \Cart\Model\Entity\CustomerAddress[] patchEntities($entities, array $data, array $options = [])
- * @method \Cart\Model\Entity\CustomerAddress findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
- */
 class CustomerAddressesTable extends Table
 {
+
     /**
-     * Initialize method
-     *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * {@inheritdoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -53,7 +35,7 @@ class CustomerAddressesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
@@ -91,7 +73,7 @@ class CustomerAddressesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
+    public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['cart_id'], 'Carts'));
 

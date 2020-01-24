@@ -10,7 +10,7 @@ class CartCell extends Cell
     /**
      * {@inheritDoc}
      */
-    public function initialize()
+    public function initialize(): void
     {
         $this->loadModel('Cart.Carts');
 

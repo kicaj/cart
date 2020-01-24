@@ -13,7 +13,7 @@ class CartsTable extends Table
     /**
      * {@inheritdoc}
      */
-    public function initialize(array $config)
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -24,9 +24,9 @@ class CartsTable extends Table
         $this->addBehavior('Timestamp');
 
         $this->belongsTo('Cart.Deliveries');
-        
+
         $this->hasOne('Cart.CustomerAddresses');
-        
+
         $this->hasMany('Cart.CartItems');
     }
 
@@ -194,7 +194,7 @@ class CartsTable extends Table
             'Carts.' . $this->getPrimaryKey(),
             'Carts.session_id',
         ])->where([
-            'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
+            'Carts.' . $this->getPrimaryKey() . ' IS' => $session->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {

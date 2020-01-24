@@ -14,7 +14,7 @@ class CartsController extends AppController
     public function index()
     {
         $cart = $this->Carts->find()->where([
-            'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.' . $this->Carts->getPrimaryKey() . ' IS' => $this->getRequest()->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
@@ -123,7 +123,7 @@ class CartsController extends AppController
         }
 
         if ($this->Carts->add($this->getRequest()->getSession(), $item, $quantity)) {
-            $this->Flash->success(__d('cart', 'Successfully added to cart!'));
+            $this->Flash->success(__d('cart', 'Successfully has been added to cart!'));
         } else {
             $this->Flash->error(__d('cart', 'Could not be added. Please, try again.'));
         }
@@ -146,7 +146,7 @@ class CartsController extends AppController
             $quantity = (int) $this->getRequest()->getData('quantity');
 
             if ($this->Carts->change($this->getRequest()->getSession(), $item, $quantity)) {
-                $this->Flash->success(__d('cart', 'Successfully changed in cart!'));
+                $this->Flash->success(__d('cart', 'Successfully has been changed in cart!'));
             } else {
                 $this->Flash->error(__d('start', 'Could not be changed. Please, try again.'));
             }
@@ -164,7 +164,7 @@ class CartsController extends AppController
     {
         if ($this->getRequest()->is(['delete', 'post'])) {
             if ($this->Carts->remove($this->getRequest()->getSession(), $item)) {
-                $this->Flash->success(__d('cart', 'Successfully removed from cart!'));
+                $this->Flash->success(__d('cart', 'Successfully has been removed from cart!'));
             } else {
                 $this->Flash->error(__d('cart', 'Could not be removed. Please, try again.'));
             }

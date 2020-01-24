@@ -9,7 +9,11 @@ use Cake\Validation\Validator;
 class DeliveriesTable extends Table
 {
 
-    public function initialize(array $config)
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize(array $config): void
     {
         parent::initialize($config);
 
@@ -20,7 +24,7 @@ class DeliveriesTable extends Table
         $this->addBehavior('Timestamp');
     }
 
-    public function validationDefault(Validator $validator)
+    public function validationDefault(Validator $validator): Validator
     {
         $validator
             ->integer('id')
