@@ -26,7 +26,7 @@ class CartCell extends Cell
             'Carts.' . $this->Carts->getPrimaryKey(),
             'Carts.amount',
         ])->where([
-            'Carts.' . $this->Carts->getPrimaryKey() => $this->request->getSession()->read('Cart.id'),
+            'Carts.' . $this->Carts->getPrimaryKey() . ' IS' => $this->request->getSession()->read('Cart.id'),
             'Carts.status' => Cart::CART_STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
