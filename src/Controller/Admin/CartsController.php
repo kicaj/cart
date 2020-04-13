@@ -38,7 +38,7 @@ class CartsController extends AppController
                     },
                 ]);
             },
-        ]), [
+        ])/*, [
             'order' => [
                 'modified' => 'DESC',
             ],
@@ -50,7 +50,7 @@ class CartsController extends AppController
                 'payment',
                 'modified',
             ],
-        ]);
+        ]*/);
 
         $this->set(compact('carts'));
     }
