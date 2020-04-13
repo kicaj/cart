@@ -25,7 +25,7 @@ use Cart\Model\Entity\Cart;
             <tr>
                 <td><?= $this->Number->format($cart->id) ?></td>
                 <td><?= Cart::getStatus($cart->status) ?></td>
-                <td><?= Cart::getPayment($cart->payment) ?></td>
+                <td><?= Cart::getPaymentStatus($cart->payment) ?></td>
                 <td><?= $this->Number->currency($cart->total) ?></td>
                 <td><?= h($cart->created) ?></td>
                 <td><?= h($cart->modified) ?></td>
@@ -44,6 +44,5 @@ use Cart\Model\Entity\Cart;
             <?= $this->Paginator->next(__('next') . ' >') ?>
             <?= $this->Paginator->last(__('last') . ' >>') ?>
         </ul>
-        <p><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
     </div>
 </div>

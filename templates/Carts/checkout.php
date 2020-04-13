@@ -31,7 +31,6 @@
         </tr>
     <?php endforeach; ?>
 </table>
-
 <table>
     <caption><?php echo __d('cart', 'Summary'); ?></caption>
     <tr>
@@ -75,13 +74,13 @@
 </table>
 <?php echo $this->Form->create($cart); ?>
     <fieldset>
-    	<legend><?= __('Add Customer Address') ?></legend>
-	    <?php
-	        echo $this->Form->control('customer_address.street');
-	        echo $this->Form->control('customer_address.postal');
-	        echo $this->Form->control('customer_address.city');
-	        echo $this->Form->control('customer_address.country');
-	    ?>
-	</fieldset>
+        <legend><?= __('Add Customer Address') ?></legend>
+        <?php
+            echo $this->Form->control('customer_address.street');
+            echo $this->Form->control('customer_address.postal');
+            echo $this->Form->control('customer_address.city');
+            echo $this->Form->control('customer_address.country');
+        ?>
+    </fieldset>
     <?php echo $this->Form->submit(__d('cart', 'Payment')); ?>
 <?php echo $this->Form->end(); ?>

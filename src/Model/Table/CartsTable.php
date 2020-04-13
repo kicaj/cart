@@ -43,7 +43,7 @@ class CartsTable extends Table
                 'Carts.session_id',
             ])->where([
                 'Carts.customer_id' => $session->read('Auth.id'),
-                'Carts.status' => Cart::CART_STATUS_OPEN,
+                'Carts.status' => Cart::STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
             ]);
@@ -60,7 +60,7 @@ class CartsTable extends Table
                             'Carts.' . $this->getPrimaryKey(),
                         ])->where([
                             'Carts.customer_id' => $session->read('Auth.id'),
-                            'Carts.status' => Cart::CART_STATUS_OPEN,
+                            'Carts.status' => Cart::STATUS_OPEN,
                         ])->contain([
                             'CartItems' => function ($cart_items) {
                                 return $cart_items->select([
@@ -76,7 +76,7 @@ class CartsTable extends Table
                             array_map(function ($cart) use ($session) {
                                 // Set cart status to merged
                                 $this->updateAll([
-                                    'status' => Cart::CART_STATUS_MERGED,
+                                    'status' => Cart::STATUS_MERGED,
                                 ], [
                                     $this->getPrimaryKey() => $cart->id,
                                 ]);
@@ -107,7 +107,7 @@ class CartsTable extends Table
                     'Carts.customer_id',
                 ])->where([
                     'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-                    'Carts.status' => Cart::CART_STATUS_OPEN,
+                    'Carts.status' => Cart::STATUS_OPEN,
                 ]);
 
                 if (!$cart->isEmpty()) {
@@ -135,7 +135,7 @@ class CartsTable extends Table
                 'Carts.' . $this->getPrimaryKey(),
             ])->where([
                 'Carts.customer_id' => $customer_id,
-                'Carts.status' => Cart::CART_STATUS_OPEN,
+                'Carts.status' => Cart::STATUS_OPEN,
             ])->order([
                 'Carts.created' => 'DESC',
             ]);
@@ -145,11 +145,11 @@ class CartsTable extends Table
 
                 // Reject old carts.
                 $this->updateAll([
-                    'status' => Cart::CART_STATUS_REJECTED,
+                    'status' => Cart::STATUS_REJECTED,
                 ], [
                     $this->getPrimaryKey() .' !=' => $cart->id,
                     'customer_id' => $customer_id,
-                    'status' => Cart::CART_STATUS_OPEN,
+                    'status' => Cart::STATUS_OPEN,
                 ]);
 
                 return $cart;
@@ -195,7 +195,7 @@ class CartsTable extends Table
             'Carts.session_id',
         ])->where([
             'Carts.' . $this->getPrimaryKey() . ' IS' => $session->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
@@ -263,7 +263,7 @@ class CartsTable extends Table
             'Carts.' . $this->getPrimaryKey(),
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
@@ -312,7 +312,7 @@ class CartsTable extends Table
             'Carts.' . $this->getPrimaryKey(),
         ])->where([
             'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([

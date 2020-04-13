@@ -11,40 +11,40 @@ class Cart extends Entity
     /**
      * Cart statuses.
      */
-    public const CART_STATUS_MERGED = -2; // Technical
-    public const CART_STATUS_REJECTED = -1;
-    public const CART_STATUS_OPEN = 0; // Technical
-    public const CART_STATUS_NEW = 1;
-    public const CART_STATUS_READY = 2;
-    public const CART_STATUS_SHIPPED = 3;
-    public const CART_STATUS_REFUNDED = 4;
-    public const CART_STATUS_COMPLAINED = 5;
+    public const STATUS_MERGED = -2; // Technical
+    public const STATUS_REJECTED = -1;
+    public const STATUS_OPEN = 0; // Technical
+    public const STATUS_NEW = 1;
+    public const STATUS_READY = 2;
+    public const STATUS_SHIPPED = 3;
+    public const STATUS_REFUNDED = 4;
+    public const STATUS_COMPLAINED = 5;
 
     /**
-     * Cart payments.
+     * Cart payment statuses.
      */
-    public const CART_PAYMENT_CANCELED = -1;
-    public const CART_PAYMENT_STARTED = 0;
-    public const CART_PAYMENT_PENDING = 1;
-    public const CART_PAYMENT_COMPLETED = 2;
-    public const CART_PAYMENT_DELIVERY = 3;
+    public const PAYMENT_CANCELED = -1;
+    public const PAYMENT_STARTED = 0;
+    public const PAYMENT_PENDING = 1;
+    public const PAYMENT_COMPLETED = 2;
+    public const PAYMENT_DELIVERY = 3;
 
     /**
      * List of statuses.
      *
      * @return array Statuses list.
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
-            self::CART_STATUS_MERGED => __d('cart', 'Merged'),
-            self::CART_STATUS_REJECTED => __d('cart', 'Rejected'),
-            self::CART_STATUS_OPEN => __d('cart', 'Open'),
-            self::CART_STATUS_NEW => __d('cart', 'New'),
-            self::CART_STATUS_READY => __d('cart', 'Ready'),
-            self::CART_STATUS_SHIPPED => __d('cart', 'Shipped'),
-            self::CART_STATUS_REFUNDED => __d('cart', 'Refunded'),
-            self::CART_STATUS_COMPLAINED => __d('cart', 'Complained'),
+            self::STATUS_MERGED => __d('cart', 'Merged'),
+            self::STATUS_REJECTED => __d('cart', 'Rejected'),
+            self::STATUS_OPEN => __d('cart', 'Open'),
+            self::STATUS_NEW => __d('cart', 'New'),
+            self::STATUS_READY => __d('cart', 'Ready'),
+            self::STATUS_SHIPPED => __d('cart', 'Shipped'),
+            self::STATUS_REFUNDED => __d('cart', 'Refunded'),
+            self::STATUS_COMPLAINED => __d('cart', 'Complained'),
         ];
     }
 
@@ -54,7 +54,7 @@ class Cart extends Entity
      * @param integer $status Status identifier.
      * @return string Status name.
      */
-    public static function getStatus($status)
+    public static function getStatus(int $status): string
     {
         $statuses = self::getStatuses();
 
@@ -66,33 +66,33 @@ class Cart extends Entity
     }
 
     /**
-     * List of payments.
+     * List of payment statuses.
      *
-     * @return array Payment list.
+     * @return array Payment statuses list.
      */
-    public static function getPayments()
+    public static function getPaymentStatuses(): array
     {
         return [
-            self::CART_PAYMENT_CANCELED => __d('cart', 'Canceled'),
-            self::CART_PAYMENT_STARTED => __d('cart', 'Started'),
-            self::CART_PAYMENT_PENDING => __d('cart', 'Pending'),
-            self::CART_PAYMENT_COMPLETED => __d('cart', 'Completed'),
-            self::CART_PAYMENT_DELIVERY => __d('cart', 'On delivery'),
+            self::PAYMENT_CANCELED => __d('cart', 'Canceled'),
+            self::PAYMENT_STARTED => __d('cart', 'Started'),
+            self::PAYMENT_PENDING => __d('cart', 'Pending'),
+            self::PAYMENT_COMPLETED => __d('cart', 'Completed'),
+            self::PAYMENT_DELIVERY => __d('cart', 'On delivery'),
         ];
     }
 
     /**
-     * Get payment.
+     * Get payment status.
      *
-     * @param integer $payment Payment identifier.
-     * @return string Payment name.
+     * @param integer $paymentStatus Payment identifier.
+     * @return string Payment status name.
      */
-    public static function getPayment($payment)
+    public static function getPaymentStatus(int $paymentStatus): string
     {
-        $payments = self::getPayments();
+        $paymentStatuses = self::getPaymentStatuses();
 
-        if (array_key_exists($payment, $payments)) {
-            return $payments[$payment];
+        if (array_key_exists($paymentStatus, $paymentStatuses)) {
+            return $paymentStatuses[$paymentStatus];
         }
 
         return '';
@@ -103,7 +103,7 @@ class Cart extends Entity
      *
      * @return float Amount netto value.
      */
-    protected function _getAmountNetto()
+    protected function _getAmountNetto(): float
     {
         if (isset($this->cart_items)) {
             $amount_netto = 0;
@@ -131,7 +131,7 @@ class Cart extends Entity
      *
      * @return float Total brutto value.
      */
-    protected function _getTotal()
+    protected function _getTotal(): float
     {
         $total = $this->amount;
 

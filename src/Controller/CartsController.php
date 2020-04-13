@@ -15,7 +15,7 @@ class CartsController extends AppController
     {
         $cart = $this->Carts->find()->where([
             'Carts.' . $this->Carts->getPrimaryKey() . ' IS' => $this->getRequest()->getSession()->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
@@ -63,7 +63,7 @@ class CartsController extends AppController
     {
         $cart = $this->Carts->find()->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
@@ -91,8 +91,8 @@ class CartsController extends AppController
                     'associated' => ['CustomerAddresses']
                 ]);
 
-                $cart->status = Cart::CART_STATUS_NEW;
-                $cart->payment = Cart::CART_PAYMENT_STARTED;
+                $cart->status = Cart::STATUS_NEW;
+                $cart->payment = Cart::PAYMENT_STARTED;
 
                 if ($this->Carts->save($cart)) {
                     $cart = $cart->toArray();
@@ -174,13 +174,13 @@ class CartsController extends AppController
     }
 
     /**
-     * Payment.
+     * Pay.
      */
     public function pay()
     {
         $cart = $this->Carts->find()->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
-            'Carts.status' => Cart::CART_STATUS_OPEN,
+            'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
@@ -202,8 +202,8 @@ class CartsController extends AppController
 
             if (!empty($cart->cart_items)) {
                 $cart = $this->Carts->patchEntity($cart, [
-                    'status' => Cart::CART_STATUS_NEW,
-                    'payment' => Cart::CART_PAYMENT_STARTED,
+                    'status' => Cart::STATUS_NEW,
+                    'payment' => Cart::PAYMENT_STARTED,
                 ]);
 
                 if ($this->Carts->save($cart)) {

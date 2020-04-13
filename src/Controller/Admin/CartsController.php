@@ -23,7 +23,7 @@ class CartsController extends AppController
             'Carts.created',
             'Carts.modified',
         ])->where([
-            'Carts.status !=' => Cart::CART_STATUS_MERGED,
+            'Carts.status !=' => Cart::STATUS_MERGED,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
@@ -72,7 +72,7 @@ class CartsController extends AppController
             'Carts.modified',
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
-            'Carts.status !=' => Cart::CART_STATUS_MERGED,
+            'Carts.status !=' => Cart::STATUS_MERGED,
         ])->contain([
             'Deliveries' => function ($delivery) {
                 return $delivery->select([
