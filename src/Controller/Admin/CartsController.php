@@ -58,25 +58,31 @@ class CartsController extends AppController
     /**
      * View cart.
      *
-     * @param string|null $id Cart identifier.
+     * @param null|integer $id Cart identifier.
      */
     public function view($id = null)
     {
-        $cart = $this->Carts->find()->select([
-            'Carts.' . $this->Carts->getPrimaryKey(),
-            'Carts.customer_id',
-            'Carts.delivery_id',
-            'Carts.amount',
-            'Carts.status',
-            'Carts.payment',
-            'Carts.modified',
-        ])->where([
+        $cart = $this->Carts->find()->where([
             'Carts.' . $this->Carts->getPrimaryKey() => $id,
             'Carts.status !=' => Cart::STATUS_MERGED,
         ])->contain([
+            'CartItems' => function ($cart_items) {
+                return $cart_items->select([
+                    'CartItems.cart_id',
+                    'CartItems.price',
+                    'CartItems.tax',
+                    'CartItems.quantity',
+                ])->contain([
+                    'CartItemProducts' => function ($cart_item_product) {
+                        return $cart_item_product->select($this->Carts->CartItems->CartItemProducts);
+                    },
+                ]);
+            },
             'Deliveries' => function ($delivery) {
                 return $delivery->select([
                     'Deliveries.name',
+                    'Deliveries.tax',
+                    'Deliveries.cost',
                 ]);
             },
             'CustomerAddresses' => function ($customer_address) {
@@ -121,11 +127,11 @@ class CartsController extends AppController
     }
 
     /**
-     * Delete cart item.
+     * Remove cart item.
      *
-     * @param string|null $cart_item_id Cart item identifier.
+     * @param null|integer $cart_item_id Cart item identifier.
      */
-    public function deleteItem($cart_item_id = null)
+    public function removeItem($cart_item_id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
 
@@ -138,9 +144,9 @@ class CartsController extends AppController
 
         if (!$cartItem->isEmpty()) {
             if ($this->Carts->CartItems->deleteOrFail($cartItem->first())) {
-                $this->Flash->success(__d('admin', 'The element has been deleted.'));
+                $this->Flash->success(__d('admin', 'The element has been removed from cart1'));
             } else {
-                $this->Flash->error(__d('admin', 'The element could not be deleted. Please, try again.'));
+                $this->Flash->error(__d('admin', 'The element could not be removed. Please, try again.'));
             }
 
             return $this->redirect($this->getRequest()->referer());

@@ -45,8 +45,15 @@
         <td><?php echo $this->Number->currency($cart->amount - $cart->amount_netto); ?></td>
     </tr>
     <tr>
+        <td><?php echo __d('cart', 'Amount'); ?>:</td>
         <td>
-            <?php echo __d('cart', 'Delivery'); ?>:<br>
+            <?php echo $this->Number->currency($cart->amount); ?><br>
+            brutto
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <?php echo __d('cart', 'Delivery cost'); ?>:<br>
             <?php
                 if (!is_null($cart->delivery)) {
                     echo $cart->delivery->name;

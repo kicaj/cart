@@ -99,7 +99,7 @@ class Cart extends Entity
     }
 
     /**
-     * Get amount netto.
+     * Get items amount netto.
      *
      * @return float Amount netto value.
      */

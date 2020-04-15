@@ -46,7 +46,7 @@
     </table>
     <?php echo $this->Form->create($cart); ?>
         <?php
-            if (!empty($deliveries)) {
+            if (!$deliveries->isEmpty()) {
                 echo __d('cart', 'Delivery');
 
                 echo $this->Form->radio('delivery_id', array_map(function ($delivery) {

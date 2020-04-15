@@ -59,6 +59,9 @@ class CartsController extends AppController
         }
     }
 
+    /**
+     * Cart checkout.
+     */
     public function checkout()
     {
         $cart = $this->Carts->find()->where([
@@ -129,10 +132,14 @@ class CartsController extends AppController
         }
 
         if ($redirect = $this->getRequest()->getQuery('redirect')) {
-            $this->redirect($redirect);
+            return $this->redirect($redirect);
+        } elseif ($redirect = $this->getRequest()->referer()) {
+            return $this->redirect($redirect);
         }
 
-        $this->redirect($this->getRequest()->referer());
+        return $this->redirect([
+            'action' => 'index',
+        ]);
     }
 
     /**
@@ -148,11 +155,17 @@ class CartsController extends AppController
             if ($this->Carts->change($this->getRequest()->getSession(), $item, $quantity)) {
                 $this->Flash->success(__d('cart', 'Successfully has been changed in cart!'));
             } else {
-                $this->Flash->error(__d('start', 'Could not be changed. Please, try again.'));
+                $this->Flash->error(__d('cart', 'Could not be changed. Please, try again.'));
             }
         }
 
-        $this->redirect($this->getRequest()->referer());
+        if ($redirect = $this->getRequest()->referer()) {
+            return $this->redirect($redirect);
+        }
+
+        return $this->redirect([
+            'action' => 'index',
+        ]);
     }
 
     /**
@@ -170,7 +183,13 @@ class CartsController extends AppController
             }
         }
 
-        $this->redirect($this->getRequest()->referer());
+        if ($redirect = $this->getRequest()->referer()) {
+            return $this->redirect($redirect);
+        }
+
+        return $this->redirect([
+            'action' => 'index',
+        ]);
     }
 
     /**
