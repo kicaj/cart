@@ -84,10 +84,10 @@ class Cart extends Entity
     /**
      * Get payment status.
      *
-     * @param integer $paymentStatus Payment identifier.
+     * @param null|integer $paymentStatus Payment identifier.
      * @return string Payment status name.
      */
-    public static function getPaymentStatus(int $paymentStatus): string
+    public static function getPaymentStatus(?int $paymentStatus): string
     {
         $paymentStatuses = self::getPaymentStatuses();
 
