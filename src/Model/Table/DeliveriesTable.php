@@ -35,7 +35,7 @@ class DeliveriesTable extends Table
 
         $validator
             ->scalar('content')
-            ->requirePresence('content', 'create')
+            ->requirePresence('content', 'create');
 
         $validator
             ->integer('tax')
