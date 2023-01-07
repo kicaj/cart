@@ -3,17 +3,10 @@ use Migrations\AbstractMigration;
 
 class RenameDeliveries extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * More information on this method is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-change-method
-     * @return void
-     */
-    public function change()
+    public function change(): void
     {
-        $table = $this->table('deliveries');
-        $table->rename('cart_deliveries');
-        $table->update();
+        $this->table('deliveries')
+            ->rename('cart_deliveries')
+            ->update();
     }
 }

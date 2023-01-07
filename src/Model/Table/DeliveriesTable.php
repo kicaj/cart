@@ -8,10 +8,8 @@ use Cake\Validation\Validator;
 
 class DeliveriesTable extends Table
 {
-
-
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function initialize(array $config): void
     {
@@ -20,7 +18,6 @@ class DeliveriesTable extends Table
         $this->setTable('cart_deliveries');
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
-
         $this->addBehavior('Timestamp');
     }
 
@@ -35,6 +32,10 @@ class DeliveriesTable extends Table
             ->maxLength('name', 255)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator
+            ->scalar('content')
+            ->requirePresence('content', 'create')
 
         $validator
             ->integer('tax')

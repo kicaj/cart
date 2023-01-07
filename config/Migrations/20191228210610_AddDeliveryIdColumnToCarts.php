@@ -3,36 +3,19 @@ use Migrations\AbstractMigration;
 
 class AddDeliveryIdColumnToCarts extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * More information on this method is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-change-method
-     * @return void
-     */
-    public function change()
+    public function change(): void
     {
-        $table = $this->table('carts')
+        $this->table('cart_carts')
             ->addColumn('delivery_id', 'integer', [
+                'signed' => false,
                 'after' => 'customer_id',
                 'default' => null,
-                'limit' => 11,
                 'null' => true,
             ])
-            ->addIndex(
-                [
-                    'delivery_id',
-                ]
-            )
-            ->addForeignKey(
-                'delivery_id',
-                'deliveries',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
+            ->addIndex('delivery_id')
+            ->addForeignKey('delivery_id', 'deliveries', 'id', [
+                'delete' => 'SET NULL'
+            ])
             ->update();
     }
 }

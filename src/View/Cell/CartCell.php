@@ -12,7 +12,7 @@ class CartCell extends Cell
      */
     public function initialize(): void
     {
-        $this->loadModel('Cart.Carts');
+        $this->Carts = $this->fetchTable('Cart.Carts');
 
         $this->Carts->refresh($this->request->getSession());
     }
@@ -24,6 +24,7 @@ class CartCell extends Cell
     {
         $cart = $this->Carts->find()->select([
             'Carts.' . $this->Carts->getPrimaryKey(),
+            'Carts.items',
             'Carts.amount',
         ])->where([
             'Carts.' . $this->Carts->getPrimaryKey() . ' IS' => $this->request->getSession()->read('Cart.id'),
@@ -31,20 +32,17 @@ class CartCell extends Cell
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
-                    'CartItems.cart_id',
+                    'CartItems.cart_cart_id',
                     'CartItems.price',
                     'CartItems.tax',
                     'CartItems.quantity',
                 ]);
             },
-        ]);
+        ])->first();
 
-        if (!$cart->isEmpty()) {
-            $cart = $cart->first();
-        } else {
+        if (is_null($cart)) {
             $cart = $this->Carts->newEntity([
-                'amount' => 0,
-                'cart_items' => []
+                'cart_items' => [],
             ]);
         }
 
@@ -52,15 +50,15 @@ class CartCell extends Cell
     }
 
     /**
-     * Add item to cart.
+     * Add item to cart link.
      *
      * @param mixed $item Unique identifier of item.
-     * @param string|null $label Anchor label.
-     * @param array $options Options are the same of HtmlHelper::link() method.
+     * @param string|null $title Anchor text.
+     * @param array<string, mixed> $options Options are the same as at HtmlHelper::link() method.
      */
-    public function add($item, string $label = null, array $options = [])
+    public function add($item, string $title = null, array $options = [])
     {
-        $link = [
+        $url = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
@@ -69,27 +67,27 @@ class CartCell extends Cell
         ];
 
         if (isset($options['redirect'])) {
-            $link['?']['redirect'] = $options['redirect'];
+            $url['?']['redirect'] = $options['redirect'];
         }
 
-        if (is_null($label)) {
-            $label = __d('cart', 'Add to cart');
+        if (is_null($title)) {
+            $title = __d('cart', 'Add to cart');
         }
 
-        $this->set(compact('link', 'label', 'options'));
+        $this->set(compact('title', 'url', 'options'));
     }
 
     /**
-     * Change quantity of item in cart.
+     * Change quantity of item in cart form.
      *
      * @param mixed $item Unique identifier of item.
      * @param int $quantity Quantity of item.
-     * @param string|null $label Anchor label.
-     * @param array $options Options are the same of HtmlHelper::link() method.
+     * @param string|null $caption Button text.
+     * @param array<string, mixed> $options Options are the same of HtmlHelper::link() method.
      */
-    public function change($item, int $quantity = 1, string $label = null, array $options = [])
+    public function change($item, int $quantity = 1, string $caption = null, array $options = [])
     {
-        $link = [
+        $url = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
@@ -97,23 +95,23 @@ class CartCell extends Cell
             $item,
         ];
 
-        if (is_null($label)) {
-            $label = __d('cart', 'Change');
+        if (is_null($caption)) {
+            $caption = __d('cart', 'Change');
         }
 
-        $this->set(compact('link', 'quantity', 'label', 'options'));
+        $this->set(compact('url', 'quantity', 'caption', 'options'));
     }
 
     /**
-     * Remove item from cart.
+     * Remove item from cart post link.
      *
      * @param mixed $item Unique identifier of item.
-     * @param string|null $label Anchor label.
-     * @param array $options Options are the same of HtmlHelper::link() method.
+     * @param string|null $title Anchor text.
+     * @param array<string, mixed> $options Options are the same of HtmlHelper::link() method.
      */
-    public function remove($item, string $label = null, array $options = [])
+    public function remove($item, string $title = null, array $options = [])
     {
-        $link = [
+        $url = [
             'prefix' => false,
             'plugin' => 'Cart',
             'controller' => 'Carts',
@@ -121,10 +119,10 @@ class CartCell extends Cell
             $item,
         ];
 
-        if (is_null($label)) {
-            $label = __d('cart', 'Remove');
+        if (is_null($title)) {
+            $title = __d('cart', 'Remove');
         }
 
-        $this->set(compact('link', 'label', 'options'));
+        $this->set(compact('title', 'url', 'options'));
     }
 }

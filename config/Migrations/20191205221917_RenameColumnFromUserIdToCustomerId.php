@@ -3,17 +3,10 @@ use Migrations\AbstractMigration;
 
 class RenameColumnFromUserIdToCustomerId extends AbstractMigration
 {
-    /**
-     * Change Method.
-     *
-     * More information on this method is available here:
-     * http://docs.phinx.org/en/latest/migrations.html#the-change-method
-     * @return void
-     */
-    public function change()
+    public function change(): void
     {
-        $table = $this->table('carts');
-        $table->renameColumn('user_id', 'customer_id');
-        $table->update();
+        $this->table('cart_carts')
+            ->renameColumn('user_id', 'customer_id')
+            ->update();
     }
 }

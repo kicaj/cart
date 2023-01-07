@@ -5,8 +5,35 @@ use Cake\ORM\Entity;
 use Cart\Exception\AmountNettoFieldsException;
 use Cart\Exception\AmountNettoItemsException;
 
+/**
+ * Cart Entity.
+ *
+ * @property int $id
+ * @property string $session_id
+ * @property int|null $customer_id
+ * @property int|null $delivery_id
+ * @property int $items
+ * @property float $amount
+ * @property int|null $payment
+ * @property \Cake\I18n\FrozenTime $created_at
+ * @property \Cake\I18n\FrozenTime|null $updated_at
+ * @property \Cart\Model\Entity\Delivery $delivery
+ * @property \Cart\Model\Entity\CartItem[] $cart_items
+ */
 class Cart extends Entity
 {
+    /**
+     * Fields that can be mass assigned using newEntity() or patchEntity().
+     *
+     * @var array
+     */
+    protected $_accessible = [
+        'session_id' => true,
+        'customer_id' => true,
+        'items' => true,
+        'amount' => true,
+        'cart_items' => true,
+    ];
 
     /**
      * Cart statuses.
@@ -84,10 +111,10 @@ class Cart extends Entity
     /**
      * Get payment status.
      *
-     * @param null|integer $paymentStatus Payment identifier.
+     * @param int $paymentStatus Payment identifier.
      * @return string Payment status name.
      */
-    public static function getPaymentStatus(?int $paymentStatus): string
+    public static function getPaymentStatus(int $paymentStatus): string
     {
         $paymentStatuses = self::getPaymentStatuses();
 

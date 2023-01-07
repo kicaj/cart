@@ -11,23 +11,21 @@ class CartsTable extends Table
 {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function initialize(array $config): void
     {
         parent::initialize($config);
 
-        $this->setTable('carts');
+        $this->setTable('cart_carts');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
         $this->addBehavior('Timestamp');
-
-        $this->belongsTo('Cart.Deliveries');
-
-        $this->hasOne('Cart.CustomerAddresses');
-
         $this->hasMany('Cart.CartItems');
+        $this->belongsTo('Cart.Deliveries');
+        $this->hasOne('Cart.CustomerAddresses', [
+            'foreignKey' => 'cart_cart_id',
+        ]);
     }
 
     /**
@@ -39,7 +37,7 @@ class CartsTable extends Table
     {
         if ($session->check('Auth.id')) {
             $cart = $this->find()->select([
-                'Carts.' . $this->getPrimaryKey(),
+                'Carts.id',
                 'Carts.session_id',
             ])->where([
                 'Carts.customer_id' => $session->read('Auth.id'),
@@ -57,15 +55,15 @@ class CartsTable extends Table
                     if ($session->read('Cart.id') !== $cart->id) {
                         // Merge older open carts.
                         $carts = $this->find()->select([
-                            'Carts.' . $this->getPrimaryKey(),
+                            'Carts.id',
                         ])->where([
                             'Carts.customer_id' => $session->read('Auth.id'),
                             'Carts.status' => Cart::STATUS_OPEN,
                         ])->contain([
                             'CartItems' => function ($cart_items) {
                                 return $cart_items->select([
-                                    'CartItems.' . $this->CartItems->getPrimaryKey(),
-                                    'CartItems.cart_id',
+                                    'CartItems.id',
+                                    'CartItems.cart_cart_id',
                                     'CartItems.identifier',
                                     'CartItems.quantity',
                                 ]);
@@ -78,7 +76,7 @@ class CartsTable extends Table
                                 $this->updateAll([
                                     'status' => Cart::STATUS_MERGED,
                                 ], [
-                                    $this->getPrimaryKey() => $cart->id,
+                                    'id' => $cart->id,
                                 ]);
 
                                 // Add earlier added items to cart.
@@ -92,7 +90,7 @@ class CartsTable extends Table
 
                         // Update session ID.
                         $cart = $this->patchEntity($cart, [
-                            $this->getPrimaryKey() => $session->read('Cart.id'),
+                            'id' => $session->read('Cart.id'),
                             'session_id' => $session->id(),
                         ]);
 
@@ -103,16 +101,14 @@ class CartsTable extends Table
         } else {
             if ($session->check('Cart.id')) {
                 $cart = $this->find()->select([
-                    'Carts.' . $this->getPrimaryKey(),
+                    'Carts.id',
                     'Carts.customer_id',
                 ])->where([
-                    'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
+                    'Carts.id' => $session->read('Cart.id'),
                     'Carts.status' => Cart::STATUS_OPEN,
-                ]);
+                ])->first();
 
-                if (!$cart->isEmpty()) {
-                    $cart = $cart->first();
-
+                if (!is_null($cart)) {
                     if (!empty($cart->customer_id)) {
                         $session->delete('Cart.id');
                     }
@@ -130,9 +126,9 @@ class CartsTable extends Table
      */
     private function create(string $session_id, ?int $customer_id): Entity
     {
-        if (!is_null($customer_id)) {
+        if (isset($customer_id)) {
             $cart = $this->find()->select([
-                'Carts.' . $this->getPrimaryKey(),
+                'Carts.id',
             ])->where([
                 'Carts.customer_id' => $customer_id,
                 'Carts.status' => Cart::STATUS_OPEN,
@@ -141,13 +137,11 @@ class CartsTable extends Table
             ]);
 
             if (!$cart->isEmpty()) {
-                $cart = $cart->first();
-
                 // Reject old carts.
                 $this->updateAll([
                     'status' => Cart::STATUS_REJECTED,
                 ], [
-                    $this->getPrimaryKey() .' !=' => $cart->id,
+                    'id !=' => $cart->first()->id,
                     'customer_id' => $customer_id,
                     'status' => Cart::STATUS_OPEN,
                 ]);
@@ -156,19 +150,20 @@ class CartsTable extends Table
             }
         }
 
+        // Create new cart.
         $cart = [
             'session_id' => $session_id,
         ];
 
-        if (!is_null($customer_id)) {
+        if (isset($customer_id)) {
             $cart['customer_id'] = $customer_id;
         }
 
         $cart = $this->newEntity($cart);
 
-        if ($this->save($cart)) {
-            return $cart;
-        }
+        $this->saveOrFail($cart);
+
+        return $cart;
     }
 
     /**
@@ -184,23 +179,19 @@ class CartsTable extends Table
     {
         $item = $this->CartItems->CartItemProducts->find()->where([
             'CartItemProducts.' . $this->CartItems->CartItemProducts->getBindingKey() => $identifier,
-        ]);
-
-        if ($item->isEmpty()) {
-            throw new NotFoundException();
-        }
+        ])->firstOrFail();
 
         $cart = $this->find()->select([
-            'Carts.' . $this->getPrimaryKey(),
+            'Carts.id',
             'Carts.session_id',
         ])->where([
-            'Carts.' . $this->getPrimaryKey() . ' IS' => $session->read('Cart.id'),
+            'Carts.id IS' => $session->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
-                    'CartItems.' . $this->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                     'CartItems.quantity',
                 ])->where([
                     'CartItems.identifier' => $identifier,
@@ -208,13 +199,13 @@ class CartsTable extends Table
             },
         ])->first();
 
-        if (!$cart) {
+        if (is_null($cart)) {
             $cart = $this->create($session->id(), $session->read('Auth.id'));
 
             $session->write('Cart.id', $cart->id);
         }
 
-        if ($cart->cart_items) {
+        if (isset($cart->cart_items[0])) {
             if ($quantity < 1) {
                 $quantity = 1;
             }
@@ -229,15 +220,15 @@ class CartsTable extends Table
                 'cart_items' => [
                     [
                         'identifier' => $identifier,
-                        'price' => $item->first()->price,
-                        'tax' => $item->first()->tax,
+                        'price' => $item->price,
+                        'tax' => $item->tax,
                         'quantity' => $quantity,
                     ],
                 ],
             ]);
         }
 
-        // Update user ID.
+        // Update customer identifier.
         if (empty($cart->customer_id) && $customer_id = $session->read('Auth.id')) {
             $cart->customer_id = $customer_id;
         }
@@ -260,15 +251,15 @@ class CartsTable extends Table
     public function change(Session $session, string $identifier, int $quantity = 1): bool
     {
         $cart = $this->find()->select([
-            'Carts.' . $this->getPrimaryKey(),
+            'Carts.id',
         ])->where([
-            'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
+            'Carts.id' => $session->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
-                    'CartItems.' . $this->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                     'CartItems.quantity',
                 ])->where([
                     'CartItems.identifier' => $identifier,
@@ -309,15 +300,15 @@ class CartsTable extends Table
     public function remove(Session $session, string $identifier, int $quantity = 1): bool
     {
         $cart = $this->find()->select([
-            'Carts.' . $this->getPrimaryKey(),
+            'Carts.id',
         ])->where([
-            'Carts.' . $this->getPrimaryKey() => $session->read('Cart.id'),
+            'Carts.id' => $session->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) use ($identifier) {
                 return $cart_items->select([
-                    'CartItems.' . $this->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                 ])->where([
                     'CartItems.identifier' => $identifier,
                 ]);

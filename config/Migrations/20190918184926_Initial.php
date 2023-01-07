@@ -3,62 +3,41 @@ use Migrations\AbstractMigration;
 
 class Initial extends AbstractMigration
 {
-    public function up()
+    public function up(): void
     {
-
-        $this->table('cart_items')
-            ->addColumn('cart_id', 'integer', [
+        $this->table('cart_cart_items')
+            ->addColumn('cart_cart_id', 'integer', [
+                'signed' => false,
+                'null' => true,
                 'default' => null,
-                'limit' => 11,
-                'null' => false,
             ])
             ->addColumn('identifier', 'uuid', [
-                'default' => null,
-                'limit' => null,
                 'null' => false,
             ])
             ->addColumn('price', 'decimal', [
+                'signed' => false,
                 'default' => '0.00',
                 'null' => false,
-                'precision' => 6,
+                'precision' => 8,
                 'scale' => 2,
             ])
             ->addColumn('quantity', 'integer', [
+                'signed' => false,
                 'default' => '1',
-                'limit' => 11,
                 'null' => false,
             ])
-            ->addColumn('created', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('modified', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'cart_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'identifier',
-                ]
-            )
+            ->addTimestamps()
+            ->addIndex('cart_cart_id')
+            ->addIndex('identifier')
             ->create();
 
-        $this->table('carts')
+        $this->table('cart_carts')
             ->addColumn('session_id', 'string', [
-                'default' => null,
-                'limit' => 255,
                 'null' => false,
             ])
             ->addColumn('user_id', 'integer', [
+                'signed' => false,
                 'default' => null,
-                'limit' => 11,
                 'null' => true,
             ])
             ->addColumn('status', 'integer', [
@@ -66,54 +45,31 @@ class Initial extends AbstractMigration
                 'limit' => 1,
                 'null' => false,
             ])
-            ->addColumn('created', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addColumn('modified', 'datetime', [
-                'default' => null,
-                'limit' => null,
-                'null' => false,
-            ])
-            ->addIndex(
-                [
-                    'session_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'user_id',
-                ]
-            )
-            ->addIndex(
-                [
-                    'status',
-                ]
-            )
+            ->addTimestamps()
+            ->addIndex('session_id')
+            ->addIndex('user_id')
+            ->addIndex('status')
             ->create();
 
-        $this->table('cart_items')
-            ->addForeignKey(
-                'cart_id',
-                'carts',
-                'id',
-                [
-                    'update' => 'CASCADE',
-                    'delete' => 'CASCADE'
-                ]
-            )
+        $this->table('cart_cart_items')
+            ->addForeignKey('cart_cart_id', 'cart_carts', 'id', [
+                'update' => 'CASCADE',
+                'delete' => 'CASCADE'
+            ])
             ->update();
     }
 
-    public function down()
+    public function down(): void
     {
-        $this->table('cart_items')
-            ->dropForeignKey(
-                'cart_id'
-            )->save();
+        $this->table('cart_cart_items')
+            ->dropForeignKey('cart_cart_id')
+            ->save();
 
-        $this->table('cart_items')->drop()->save();
-        $this->table('carts')->drop()->save();
+        $this->table('cart_cart_items')
+            ->drop()
+            ->save();
+        $this->table('cart_carts')
+            ->drop()
+            ->save();
     }
 }

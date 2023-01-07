@@ -10,7 +10,7 @@ class CustomerAddressesTable extends Table
 {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function initialize(array $config): void
     {
@@ -19,11 +19,9 @@ class CustomerAddressesTable extends Table
         $this->setTable('customer_addresses');
         $this->setDisplayField('id');
         $this->setPrimaryKey('id');
-
         $this->addBehavior('Timestamp');
-
         $this->belongsTo('Carts', [
-            'foreignKey' => 'cart_id',
+            'foreignKey' => 'cart_cart_id',
             'joinType' => 'INNER',
             'className' => 'Cart.Carts',
         ]);
@@ -68,7 +66,7 @@ class CustomerAddressesTable extends Table
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {
-        $rules->add($rules->existsIn(['cart_id'], 'Carts'));
+        $rules->add($rules->existsIn(['cart_cart_id'], 'Carts'));
 
         return $rules;
     }

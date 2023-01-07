@@ -1,16 +1,20 @@
 <?php
-    echo $this->Form->create(null, [
-        'url' => $link,
-    ]);
+/**
+ * @var \App\View\AppView $this
+ * @var array $url
+ * @var int $quantity
+ * @var string $caption
+ * @var array<string, mixed> $options
+ */
 ?>
-    <?php
-        echo $this->Form->control('quantity', [
-            'label' => __d('cart', 'Quantity'),
-            'type' => 'number',
-            'min' => 1,
-            'value' => $quantity,
-        ]);
-
-        echo $this->Form->submit($label, $options);
-    ?>
-<?php echo $this->Form->end(); ?>
+<?= $this->Form->create(null, [
+    'url' => $url,
+]) ?>
+    <?= $this->Form->control('quantity', [
+        'label' => false,
+        'type' => 'number',
+        'min' => 1,
+        'value' => $quantity,
+    ]) ?>
+    <?= $this->Form->submit($caption, $options) ?>
+<?= $this->Form->end() ?>

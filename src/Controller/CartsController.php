@@ -7,20 +7,21 @@ use Cart\Model\Entity\Cart;
 
 class CartsController extends AppController
 {
-
     /**
      * Cart.
+     *
+     * @return \Cake\Http\Response|void Redirects or renders view otherwise.
      */
     public function index()
     {
         $cart = $this->Carts->find()->where([
-            'Carts.' . $this->Carts->getPrimaryKey() . ' IS' => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.id IS' => $this->getRequest()->getSession()->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
-                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                     'CartItems.identifier',
                     'CartItems.price',
                     'CartItems.tax',
@@ -31,17 +32,13 @@ class CartsController extends AppController
                     },
                 ]);
             },
-        ]);
+        ])->first();
 
-        if (!$cart->isEmpty()) {
-            $cart = $cart->first();
-
+        if (!is_null($cart)) {
             if ($this->request->is(['patch', 'post', 'put'])) {
                 $cart = $this->Carts->patchEntity($cart, $this->request->getData());
 
                 if ($this->Carts->save($cart)) {
-                    $this->Flash->success(__d('cart', 'The changes has been saved.'));
-
                     return $this->redirect([
                         'action' => 'checkout',
                     ]);
@@ -61,17 +58,25 @@ class CartsController extends AppController
 
     /**
      * Cart checkout.
+     *
+     * @return \Cake\Http\Response|void Redirects or renders view otherwise.
      */
     public function checkout()
     {
+        if ($this->getRequest()->getSession()->check('Cart.id') === false) {
+            return $this->redirect([
+                'action' => 'index',
+            ]);
+        }
+
         $cart = $this->Carts->find()->where([
-            'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.id' => $this->getRequest()->getSession()->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
-                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                     'CartItems.identifier',
                     'CartItems.price',
                     'CartItems.tax',
@@ -84,11 +89,9 @@ class CartsController extends AppController
             },
             'CustomerAddresses',
             'Deliveries',
-        ]);
+        ])->first();
 
-        if (!$cart->isEmpty()) {
-            $cart = $cart->first();
-
+        if (!is_null($cart)) {
             if ($this->request->is(['patch', 'post', 'put'])) {
                 $cart = $this->Carts->patchEntity($cart, $this->request->getData(), [
                     'associated' => ['CustomerAddresses']
@@ -106,7 +109,7 @@ class CartsController extends AppController
 
             $this->set(compact('cart'));
         } else {
-            $this->redirect([
+            return $this->redirect([
                 'action' => 'index',
             ]);
         }
@@ -198,13 +201,13 @@ class CartsController extends AppController
     public function pay()
     {
         $cart = $this->Carts->find()->where([
-            'Carts.' . $this->Carts->getPrimaryKey() => $this->getRequest()->getSession()->read('Cart.id'),
+            'Carts.id' => $this->getRequest()->getSession()->read('Cart.id'),
             'Carts.status' => Cart::STATUS_OPEN,
         ])->contain([
             'CartItems' => function ($cart_items) {
                 return $cart_items->select([
-                    'CartItems.' . $this->Carts->CartItems->getPrimaryKey(),
-                    'CartItems.cart_id',
+                    'CartItems.id',
+                    'CartItems.cart_cart_id',
                     'CartItems.identifier',
                     'CartItems.price',
                     'CartItems.quantity',
