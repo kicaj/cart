@@ -1,26 +1,29 @@
 <?php
+declare(strict_types=1);
+
 use Migrations\AbstractMigration;
+use Phinx\Db\Table\Column;
 
 class CreateCustomerAddresses extends AbstractMigration
 {
     public function change(): void
     {
-        $this->table('customer_addresses')
-            ->addColumn('cart_cart_id', 'integer', [
+        $this->table('customer_addresses', ['signed' => false])
+            ->addColumn('cart_cart_id', Column::INTEGER, [
                 'signed' => false,
                 'null' => false,
             ])
-            ->addColumn('street', 'string', [
+            ->addColumn('street', Column::STRING, [
                 'null' => false,
             ])
-            ->addColumn('postal', 'integer', [
+            ->addColumn('postal', Column::INTEGER, [
                 'limit' => 6,
                 'null' => false,
             ])
-            ->addColumn('city', 'string', [
+            ->addColumn('city', Column::STRING, [
                 'null' => false,
             ])
-            ->addColumn('country', 'integer', [
+            ->addColumn('country', Column::INTEGER, [
                 'limit' => 3,
                 'null' => false,
             ])
